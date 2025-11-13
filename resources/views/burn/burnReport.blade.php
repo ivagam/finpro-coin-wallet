@@ -26,24 +26,25 @@
     </div>
 
     <div class="card-body">
-        <table class="table bordered-table mb-0">
-            <thead>
-                <tr>
-                    <th scope="col">S.L</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Date</th>
+        <div class="table-responsive">
+            <table class="table bordered-table mb-0 align-middle text-nowrap">
+                <thead>
+                    <tr>
+                    <th style="width: 5%;">S.L</th>
+                    <th style="width: 10%;">User</th>
+                    <th style="width: 35%;">Address</th>                    
+                    <th style="width: 20%;">Amount</th>
+                    <th style="width: 20%;">Date</th>                    
                 </tr>
             </thead>
-            <tbody>
-                @forelse($burnTransactions as $index => $tx)
+            <tbody>                
+                @forelse($burnReport as $index => $tx)
                 <tr>
-                    <td>{{ $burnTransactions->firstItem() + $index }}</td>
+                    <td>{{ $burnReport->firstItem() + $index }}</td>
                     <td>{{ $tx['fullname'] ?? 'N/A' }}</td>
-                    <td>{{ $tx['from_address'] ?? 'N/A' }}</td>
+                    <td class="text-truncate" style="max-width: 250px;">{{ $tx['from_address'] ?? 'N/A' }}</td>
                     <td>{{ number_format($tx['amount'], 8) }}</td>
-                    <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d M Y H:i') : 'N/A' }}</td>
+                    <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : 'N/A' }}</td>
                 </tr>
                 @empty
                 <tr>
@@ -52,11 +53,12 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
 
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-24">
-            <span>Showing {{ $burnTransactions->count() }} of {{ $burnTransactions->total() }} entries</span>
+            <span>Showing {{ $burnReport->count() }} of {{ $burnReport->total() }} entries</span>
             <div>
-                {{ $burnTransactions->links() }}
+                {{ $burnReport->links() }}
             </div>
         </div>
     </div>

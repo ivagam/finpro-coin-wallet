@@ -25,10 +25,10 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                    <a href="{{ route('mint') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Transfer Amount</a>
+                    <a href="{{ route('transfer') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Transfer Amount</a>
                     </li>
                     <li>
-                    <a href="{{ route('mintReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Transaction History</a>
+                    <a href="{{ route('transferHistory') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Transaction History</a>
                     </li>                    
                 </ul>
             </li>

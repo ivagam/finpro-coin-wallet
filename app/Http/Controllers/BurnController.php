@@ -51,7 +51,7 @@ class BurnController extends Controller
         }
     }
 
-    public function burnReport()
+    public function burnReport(Request $request)
     {
         $token = session('token');
 
@@ -67,23 +67,25 @@ class BurnController extends Controller
             if ($response->failed()) {
                 return redirect()->back()->with('error', 'Failed to fetch burn report: ' . $response->body());
             }
-
+            
             $data = $response->json();
-            $burnTransactions = $data['data'] ?? [];
+            $burnReport = $data['data'] ?? [];
 
             // Manual pagination
             $perPage = 10;
-            $page = request()->get('page', 1);
-            $collection = collect($burnTransactions);
+            $page = (int) $request->get('page', 1);
+            $collection = collect($burnReport);
+            $paginatedItems = $collection->slice(($page - 1) * $perPage, $perPage)->values();
+
             $paginated = new LengthAwarePaginator(
-                $collection->forPage($page, $perPage),
+                $paginatedItems,
                 $collection->count(),
                 $perPage,
                 $page,
                 ['path' => request()->url(), 'query' => request()->query()]
             );
 
-            return view('burn.burnReport', ['burnTransactions' => $paginated]);
+            return view('burn.burnReport', ['burnReport' => $paginated]);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());

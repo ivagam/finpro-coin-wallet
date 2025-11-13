@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 
-class MintController extends Controller
+class TransactionController extends Controller
 {
-    public function mint()
-    {
-        return view('mint.index');
+    public function transfer()
+    { 
+        return view('transfer.index');
     }
 
-    public function storeMint(Request $request)
+    public function storeTransfer(Request $request)
     {
         $request->validate([
             'address' => 'required|string',
@@ -31,19 +31,19 @@ class MintController extends Controller
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
         try {
-            $response = Http::withToken($token)->post("{$apiBase}/api/mint", [
+            $response = Http::withToken($token)->post("{$apiBase}/api/transfer", [
                 'address' => $request->address,
-                'amount' => $request->amount                
+                'amount' => $request->amount
             ]);
 
             if ($response->failed()) {
-                return redirect()->back()->with('error', 'Mint request failed: ' . $response->body());
+                return redirect()->back()->with('error', 'Transfer request failed: ' . $response->body());
             }
 
             $data = $response->json();
 
             if (($data['status'] ?? '') === 'ok') {
-                return redirect()->back()->with('success', 'Mint successful!');
+                return redirect()->back()->with('success', 'Transfer successful!');
             } else {
                 return redirect()->back()->with('error', $data['error'] ?? 'Unknown error');
             }
@@ -51,8 +51,8 @@ class MintController extends Controller
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
     }
-
-    public function mintReport(Request $request)
+    
+    public function transferHistory(Request $request)
     {
         $token = session('token');
 
@@ -63,30 +63,31 @@ class MintController extends Controller
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
         try {
-            $response = Http::withToken($token)->get("{$apiBase}/api/reports/mint");
+            $response = Http::withToken($token)->get("{$apiBase}/api/transactions");
 
             if ($response->failed()) {
-                return redirect()->back()->with('error', 'Failed to fetch mint report: ' . $response->body());
+                return redirect()->back()->with('error', 'Failed to fetch transfer report: ' . $response->body());
             }
-
+            
             $data = $response->json();
-            $mintReport = $data['data'] ?? [];
-
-            // Manual pagination
+            $transactions = $data['data'] ?? [];
+            
             $perPage = 10;
             $page = (int) $request->get('page', 1);
-            $collection = collect($mintReport);
+            $collection = collect($transactions);
             $paginatedItems = $collection->slice(($page - 1) * $perPage, $perPage)->values();
 
             $paginated = new LengthAwarePaginator(
-                $paginatedItems,
+                $paginatedItems,                
                 $collection->count(),
                 $perPage,
                 $page,
                 ['path' => request()->url(), 'query' => request()->query()]
             );
 
-            return view('mint.mintReport', ['mintReport' => $paginated]);
+            return view('transfer.transferReport', [
+                'transactions' => $paginated
+            ]);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());

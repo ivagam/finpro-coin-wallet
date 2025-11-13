@@ -17,6 +17,7 @@ use App\Http\Controllers\RoleandaccessController;
 use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\MintController;
 use App\Http\Controllers\BurnController;
+use App\Http\Controllers\TransactionController;
 
 
 Route::controller(AuthenticationController::class)->group(function () {
@@ -46,6 +47,14 @@ Route::prefix('burn')->group(function () {
         Route::get('/', 'burn')->name('burn');
         Route::post('/', 'storeBurn')->name('burn.store');      
         Route::get('/burn-report', 'burnReport')->name('burnReport');
+    });
+});
+
+Route::prefix('transfer')->group(function () {
+    Route::controller(TransactionController::class)->group(function () {
+        Route::get('/', 'transfer')->name('transfer');
+        Route::post('/', 'storeTransfer')->name('transfer.store');
+        Route::get('/transfer-history', 'transferHistory')->name('transferHistory');
     });
 });
 
