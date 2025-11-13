@@ -13,7 +13,8 @@
                 <h6 class="text-xl mb-0">Add Mint</h6>
             </div>
             <div class="card-body p-24">
-                {{-- Show flash messages --}}
+
+                {{-- Flash messages --}}
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
@@ -21,24 +22,36 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
 
-                <form action="{{ route('mint.store') }}" method="POST" class="d-flex flex-column gap-20">
+                <form action="{{ route('mint.store') }}" method="POST" class="d-flex flex-column gap-3">
                     @csrf
+
+                    {{-- Address --}}
                     <div>
-                        <label class="form-label fw-bold text-neutral-900" for="address">Address:</label>
+                        <label for="address" class="form-label fw-bold">Address:</label>
                         <input type="text" name="address" id="address"
-                               class="form-control border border-neutral-200 radius-8"
-                               placeholder="Enter Address" required>
+                               class="form-control @error('address') is-invalid @enderror"
+                               placeholder="Enter Address"
+                               value="{{ old('address') }}">
+                        @error('address')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
+                    {{-- Amount --}}
                     <div>
-                        <label class="form-label fw-bold text-neutral-900" for="amount">Amount:</label>
+                        <label for="amount" class="form-label fw-bold">Amount:</label>
                         <input type="number" name="amount" id="amount"
-                               class="form-control border border-neutral-200 radius-8"
-                               placeholder="Enter Amount" required>
+                               class="form-control @error('amount') is-invalid @enderror"
+                               placeholder="Enter Amount"
+                               value="{{ old('amount') }}">
+                        @error('amount')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary-600 radius-8">Submit</button>
+                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
                 </form>
+
             </div>
         </div>
     </div>

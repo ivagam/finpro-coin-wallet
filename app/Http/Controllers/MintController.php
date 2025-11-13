@@ -30,9 +30,8 @@ class MintController extends Controller
 
         try {
             $response = Http::withToken($token)->post("{$apiBase}/api/mint", [
-                'to_address' => $request->address,
-                'amount' => $request->amount,
-                'user_id' => $user['id'] ?? null,
+                'address' => $request->address,
+                'amount' => $request->amount                
             ]);
 
             if ($response->failed()) {
@@ -53,6 +52,28 @@ class MintController extends Controller
 
     public function mintReport()
     {
-        return view('mint.mintReport');
+        $token = session('token');
+
+        if (!$token) {
+            return redirect('/login')->with('error', 'Session expired, please login again.');
+        }
+
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        try {
+            $response = Http::withToken($token)->get("{$apiBase}/api/reports/mint");
+
+            if ($response->failed()) {
+                return redirect()->back()->with('error', 'Failed to fetch mint report: ' . $response->body());
+            }
+
+            $data = $response->json();
+            $mintTransactions = $data['data'] ?? [];
+
+            return view('mint.mintReport', compact('mintTransactions'));
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+        }
     }
 }
