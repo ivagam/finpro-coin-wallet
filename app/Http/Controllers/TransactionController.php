@@ -31,7 +31,7 @@ class TransactionController extends Controller
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
         try {
-            $response = Http::withToken($token)->post("{$apiBase}/api/transfer", [
+            $response = Http::withToken($token)->post("{$apiBase}/api/user-transfer", [
                 'address' => $request->address,
                 'amount' => $request->amount
             ]);
