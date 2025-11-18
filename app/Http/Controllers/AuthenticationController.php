@@ -40,6 +40,51 @@ class AuthenticationController extends Controller
             return back()->with('error', $data['message'] ?? 'Invalid credentials.');
         }
     }
+    public function register(Request $request)
+    {
+        $request->validate([
+            'fullname' => 'required|string|max:255|min:5',
+            'email'    => 'required|email|max:255',
+            'password'    => 'required|string|max:30|min:8',
+        ]);
+
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        $response = Http::post("{$apiBase}/api/register", [
+            'fullname' => $request->input('fullname'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ]);
+
+        $data = $response->json();
+
+        if ($response->successful()) {
+            return back()->with('success', 'We have sent verification email to your email address');
+        } else {
+            return back()->with('error', $data['message'] ?? 'registration failed');
+        }
+    }
+
+    public function sendPassword(Request $request)
+    {
+         $request->validate([
+            'email'    => 'required|email|max:255',
+        ]);
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        $response = Http::post("{$apiBase}/api/forgotpassword", [
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ]);
+
+        $data = $response->json();
+
+        if ($response->successful() && isset($data['token'])) {
+            return back()->with('success', 'we have sent password to your email address');
+        } else {
+            return back()->with('error', $data['message'] ?? 'Email does not exist.');
+        }
+    }
 
     public function logout(Request $request)
     {

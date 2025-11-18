@@ -43,51 +43,132 @@
             <div class="row gy-4">
                 <div class="col-lg-4">
                     <div class="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
-                        <img src="{{ asset('assets/images/user-grid/user-grid-bg1.png') }}" alt="" class="w-100 object-fit-cover">
+                        <img src="{{ asset('assets/images/background-banner.jpg') }}" alt="" class="w-100 object-fit-cover">
                         <div class="pb-24 ms-16 mb-24 me-16  mt--100">
                             <div class="text-center border border-top-0 border-start-0 border-end-0">
-                                <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
-                                <h6 class="mb-0 mt-16">Jacob Jones</h6>
-                                <span class="text-secondary-light mb-16">ifrandom@gmail.com</span>
+                                 <img
+                                                src="{{ $user['profile_image'] ? $apiBase.'/uploads/'. $user['profile_image'] : asset('assets/images/profile.png') }}"
+                                                alt="Profile Image"
+                                                class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
+                                            />
+                                <h6 class="mb-0 mt-16">{{$user['fullname']}}</h6>
+                                <span class="text-secondary-light mb-16">{{$user['email']}}</span>
                             </div>
                             <div class="mt-24">
                                 <h6 class="text-xl mb-16">Personal Info</h6>
                                 <ul>
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light">Full Name</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: Will Jonto</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{$user['fullname']}}</span>
                                     </li>
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light"> Email</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: willjontoax@gmail.com</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{$user['email']}}</span>
                                     </li>
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light"> Phone Number</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: (1) 2536 2561 2365</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{$user['phone']}}</span>
                                     </li>
+                                    @if(!$user['is_admin'])
+
                                     <li class="d-flex align-items-center gap-1 mb-12">
-                                        <span class="w-30 text-md fw-semibold text-primary-light"> Department</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: Design</span>
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> Pancard No</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{$user['pancard_no']}}</span>
                                     </li>
+                                   
                                     <li class="d-flex align-items-center gap-1 mb-12">
-                                        <span class="w-30 text-md fw-semibold text-primary-light"> Designation</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: UI UX Designer</span>
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Pancart Image</span>
+                                        <span class="w-70 text-secondary-light fw-medium">
+                                            :
+                                            <img
+                                                src="{{ $user['pancard_image'] ? $apiBase.'/uploads/'. $user['pancard_image'] : asset('assets/images/no-image.jpg') }}"
+                                                alt="Profile Image"
+                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                            />
+                                        </span>
                                     </li>
+
+                                   
                                     <li class="d-flex align-items-center gap-1 mb-12">
-                                        <span class="w-30 text-md fw-semibold text-primary-light"> Languages</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: English</span>
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Aadhar Front</span>
+                                        <span class="w-70 text-secondary-light fw-medium">
+                                            :
+                                            <img
+                                                src="{{ $user['aadhar_front'] ? $apiBase.'/uploads/'. $user['aadhar_front'] : asset('assets/images/no-image.jpg') }}"
+                                                alt="Profile Image"
+                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                            />
+                                        </span>
+                                    </li>
+
+                                   
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Aadhar Back</span>
+                                        <span class="w-70 text-secondary-light fw-medium">
+                                            :
+                                            <img
+                                                src="{{ $user['aadhar_back'] ? $apiBase.'/uploads/'. $user['aadhar_back'] : asset('assets/images/no-image.jpg') }}"
+                                                alt="Profile Image"
+                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                            />
+                                        </span>
+                                    </li>
+
+                                    <li class="d-flex align-items-center gap-1">
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> KYC Status</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{$user['kyc_status']}}.</span>
                                     </li>
                                     <li class="d-flex align-items-center gap-1">
-                                        <span class="w-30 text-md fw-semibold text-primary-light"> Bio</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span>
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> Account Status</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user['is_active'] == 1 ? 'Active' : 'Inactive' }}</span>
                                     </li>
+                                    @endif
                                 </ul>
+                                @if(!$user['is_admin'])
+
+                                    <h6 class="text-xl mb-16">Bank Account Info</h6>
+                                    <ul>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light">Account Name</span>
+                                            <span class="w-70 text-secondary-light fw-medium">: {{$user['account_holder_name']}}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light">Account No</span>
+                                            <span class="w-70 text-secondary-light fw-medium">: {{$user['account_no']}}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light">IFSC Code</span>
+                                            <span class="w-70 text-secondary-light fw-medium">: {{$user['ifsc']}}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light">Bank Name</span>
+                                            <span class="w-70 text-secondary-light fw-medium">: {{$user['bank_name']}}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light">Branch Name</span>
+                                            <span class="w-70 text-secondary-light fw-medium">: {{$user['branch_name']}}</span>
+                                        </li>
+                                    </ul>
+                                @endif
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-8">
                     <div class="card h-100">
+                          @if(session('success'))
+                                    <div class="alert alert-success">{{ session('success') }}</div>
+                                    @endif
+                                    @if($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                        @foreach($errors->all() as $err)
+                                            <li>{{ $err }}</li>
+                                        @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
                         <div class="card-body p-24">
                             <ul class="nav border-gradient-tab nav-pills mb-20 d-inline-flex" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
@@ -100,95 +181,128 @@
                                         Change Password
                                     </button>
                                 </li>
+                                @if(!$user['is_admin'])
+
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link d-flex align-items-center px-24" id="pills-notification-tab" data-bs-toggle="pill" data-bs-target="#pills-notification" type="button" role="tab" aria-controls="pills-notification" aria-selected="false" tabindex="-1">
-                                        Notification Settings
+                                        Bank Account
                                     </button>
                                 </li>
+                                @endif
                             </ul>
 
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="pills-edit-profile" role="tabpanel" aria-labelledby="pills-edit-profile-tab" tabindex="0">
-                                    <h6 class="text-md text-primary-light mb-16">Profile Image</h6>
+                                   
+                                  
+                                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                             <h6 class="text-md text-primary-light mb-16">Profile Image</h6>
                                     <!-- Upload Image Start -->
                                     <div class="mb-24 mt-16">
                                         <div class="avatar-upload">
                                             <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
-                                                <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" hidden>
+                                                <input type='file' id="imageUpload" name="profile_image" accept=".png, .jpg, .jpeg" hidden>
                                                 <label for="imageUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
                                                     <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
                                                 </label>
                                             </div>
                                             <div class="avatar-preview">
-                                                <div id="imagePreview">
+                                                <div id="imagePreview" style='background-image: url("{{ $user["profile_image"] ? $apiBase."/uploads/".$user["profile_image"] : asset("assets/images/profile.png") }}")'>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- Upload Image End -->
-                                    <form action="#">
-                                        <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
                                                     <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Full Name <span class="text-danger-600">*</span></label>
-                                                    <input type="text" class="form-control radius-8" id="name" placeholder="Enter Full Name">
+                                                    <input type="text" name="fullname" class="form-control radius-8" value="{{$user['fullname']}}" id="name" placeholder="Enter Full Name">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
                                                     <label for="email" class="form-label fw-semibold text-primary-light text-sm mb-8">Email <span class="text-danger-600">*</span></label>
-                                                    <input type="email" class="form-control radius-8" id="email" placeholder="Enter email address">
+                                                    <input type="email" name="email" class="form-control radius-8" id="email" value="{{$user['email']}}" placeholder="Enter email address">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
                                                     <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Phone</label>
-                                                    <input type="email" class="form-control radius-8" id="number" placeholder="Enter phone number">
+                                                    <input type="number" class="form-control radius-8" name="phone"  value="{{$user['phone']}}" placeholder="Enter phone number">
                                                 </div>
                                             </div>
+                                    @if(!$user['is_admin'])
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
-                                                    <label for="depart" class="form-label fw-semibold text-primary-light text-sm mb-8">Department <span class="text-danger-600">*</span> </label>
-                                                    <select class="form-control radius-8 form-select" id="depart">
-                                                        <option>Enter Event Title </option>
-                                                        <option>Enter Event Title One </option>
-                                                        <option>Enter Event Title Two</option>
-                                                    </select>
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Pancard No</label>
+                                                    <input type="text" class="form-control radius-8" name="pancard_no"  value="{{$user['pancard_no']}}" placeholder="Enter phone number">
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
-                                                <div class="mb-20">
-                                                    <label for="desig" class="form-label fw-semibold text-primary-light text-sm mb-8">Designation <span class="text-danger-600">*</span> </label>
-                                                    <select class="form-control radius-8 form-select" id="desig">
-                                                        <option>Enter Designation Title </option>
-                                                        <option>Enter Designation Title One </option>
-                                                        <option>Enter Designation Title Two</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="mb-20">
-                                                    <label for="Language" class="form-label fw-semibold text-primary-light text-sm mb-8">Language <span class="text-danger-600">*</span> </label>
-                                                    <select class="form-control radius-8 form-select" id="Language">
-                                                        <option> English</option>
-                                                        <option> Bangla </option>
-                                                        <option> Hindi</option>
-                                                        <option> Arabic</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <div class="mb-20">
-                                                    <label for="desc" class="form-label fw-semibold text-primary-light text-sm mb-8">Description</label>
-                                                    <textarea name="#0" class="form-control radius-8" id="desc" placeholder="Write description..."></textarea>
+                                    
+                                        <div class="col-sm-6">
+                                            <div class="mb-20">
+                                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Aadhar Front</label>
+
+                                                <div class="avatar-upload">
+                                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                                        <input type="file" id="aadharFrontUpload" name="aadhar_front" accept=".png, .jpg, .jpeg" hidden>
+                                                        <label for="aadharFrontUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                                            <iconify-icon icon="solar:camera-outline"></iconify-icon>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview" style="border-radius:0px">
+                                                        <div id="aadharFrontPreview" style='background-image: url("{{ $user["aadhar_front"] ? $apiBase."/uploads/".$user["aadhar_front"] : asset("assets/images/no-image.jpg") }}");border-radius:0px'></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="mb-20">
+                                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Aadhar Back</label>
+
+                                                <div class="avatar-upload">
+                                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                                        <input type="file" id="aadharBackUpload" name="aadhar_back" accept=".png, .jpg, .jpeg" hidden>
+                                                        <label for="aadharBackUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                                            <iconify-icon icon="solar:camera-outline"></iconify-icon>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview" style="border-radius:0px">
+                                                        <div id="aadharBackPreview" style='background-image: url("{{ $user["aadhar_back"] ? $apiBase."/uploads/".$user["aadhar_back"] : asset("assets/images/no-image.jpg") }}");border-radius:0px'></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
+                                        <div class="col-sm-6">
+                                            <div class="mb-20">
+                                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Pan Card</label>
+
+                                                <div class="avatar-upload">
+                                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                                        <input type="file" id="panCardUpload" name="pancard_image" accept=".png, .jpg, .jpeg" hidden>
+                                                        <label for="panCardUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                                            <iconify-icon icon="solar:camera-outline"></iconify-icon>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview" style="border-radius:0px">
+                                                        <div id="panCardPreview" style='background-image: url("{{ $user["pancard_image"] ? $apiBase."/uploads/".$user["pancard_image"] : asset("assets/images/no-image.jpg") }}");border-radius:0px'></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                            
+                                        </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
-                                            <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                           <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                                 Cancel
-                                            </button>
-                                            <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                            </button> </a>
+                                            <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
                                                 Save
                                             </button>
                                         </div>
@@ -196,58 +310,110 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="pills-change-passwork" role="tabpanel" aria-labelledby="pills-change-passwork-tab" tabindex="0">
+                                 
+                                    <form action="{{ route('profile.changePassword') }}" method="POST">
+                                        @csrf
+                                    <div class="mb-20">
+                                        <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Current Password <span class="text-danger-600">*</span></label>
+                                        <div class="position-relative">
+                                            <input type="password" class="form-control radius-8" name="current_pass" id="current_pass" placeholder="Enter Current Password*">
+                                            <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+                                        </div>
+                                    </div>
                                     <div class="mb-20">
                                         <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">New Password <span class="text-danger-600">*</span></label>
                                         <div class="position-relative">
-                                            <input type="password" class="form-control radius-8" id="your-password" placeholder="Enter New Password*">
+                                            <input type="password" class="form-control radius-8" name="new_pass" id="new_pass" placeholder="Enter New Password*">
                                             <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
                                         </div>
                                     </div>
                                     <div class="mb-20">
                                         <label for="confirm-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmed Password <span class="text-danger-600">*</span></label>
                                         <div class="position-relative">
-                                            <input type="password" class="form-control radius-8" id="confirm-password" placeholder="Confirm Password*">
+                                            <input type="password" class="form-control radius-8" name="confirm_pass" id="confirm_pass" placeholder="Confirm Password*">
                                             <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#confirm-password"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                           <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                                Cancel
+                                            </button> </a>
+                                            <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                                Save
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
-                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                        <label for="companzNew" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                        <div class="d-flex align-items-center gap-3 justify-content-between">
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Company News</span>
-                                            <input class="form-check-input" type="checkbox" role="switch" id="companzNew">
+                                     <form action="{{ route('profile.updateBankAccount') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                            <input type="hidden" name="bank_acc_id" value="{{$user['bank_acc_id']}}"/>
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Account Holder Name <span class="text-danger-600">*</span></label>
+                                                    <input type="text" name="account_holder_name" class="form-control radius-8" value="{{$user['account_holder_name']}}" id="name" placeholder="Enter account holder Name">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Account No</label>
+                                                    <input type="number" class="form-control radius-8" name="account_no"  value="{{$user['account_no']}}" placeholder="Enter account number">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">IFSC Code</label>
+                                                    <input type="text" class="form-control radius-8" name="ifsc"  value="{{$user['ifsc']}}" placeholder="Enter ifsc code">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Bank Name</label>
+                                                    <input type="text" class="form-control radius-8" name="bank_name"  value="{{$user['bank_name']}}" placeholder="Enter bank name">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Branch Name</label>
+                                                    <input type="text" class="form-control radius-8" name="branch_name"  value="{{$user['branch_name']}}" placeholder="Enter branch name">
+                                                </div>
+                                            </div>
+                                    
+                                    
+                                        <div class="col-sm-6">
+                                            <div class="mb-20">
+                                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Bank Statement or Cancel Cheque</label>
+
+                                                <div class="avatar-upload">
+                                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                                        <input type="file" id="aadharFrontUpload" name="attachment" accept=".png, .jpg, .jpeg" hidden>
+                                                        <label for="aadharFrontUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                                            <iconify-icon icon="solar:camera-outline"></iconify-icon>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview" style="border-radius:0px">
+                                                        <div id="aadharFrontPreview" style='background-image: url("{{ $user["aadhar_front"] ? $apiBase."/uploads/".$user["aadhar_front"] : asset("assets/images/no-image.jpg") }}");border-radius:0px'></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                        <label for="pushNotifcation" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                        <div class="d-flex align-items-center gap-3 justify-content-between">
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Push Notification</span>
-                                            <input class="form-check-input" type="checkbox" role="switch" id="pushNotifcation" checked>
+
+                                        
+                                        
+                                            
                                         </div>
-                                    </div>
-                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                        <label for="weeklyLetters" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                        <div class="d-flex align-items-center gap-3 justify-content-between">
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Weekly News Letters</span>
-                                            <input class="form-check-input" type="checkbox" role="switch" id="weeklyLetters" checked>
+                                        <div class="d-flex align-items-center justify-content-center gap-3">
+                                           <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                                Cancel
+                                            </button> </a>
+                                            <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                                Save
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                        <label for="meetUp" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                        <div class="d-flex align-items-center gap-3 justify-content-between">
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Meetups Near you</span>
-                                            <input class="form-check-input" type="checkbox" role="switch" id="meetUp">
-                                        </div>
-                                    </div>
-                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                        <label for="orderNotification" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                        <div class="d-flex align-items-center gap-3 justify-content-between">
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Orders Notifications</span>
-                                            <input class="form-check-input" type="checkbox" role="switch" id="orderNotification" checked>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
 
                             </div>

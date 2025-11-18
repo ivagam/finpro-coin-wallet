@@ -23,6 +23,9 @@ use App\Http\Controllers\TransactionController;
 Route::controller(AuthenticationController::class)->group(function () {
         Route::get('/', 'signin')->name('signin');
         Route::post('/signin', 'login')->name('login');
+        Route::post('/register', 'register')->name('register');
+        Route::post('/sendPassword', 'sendPassword')->name('sendPassword');
+
         Route::get('/forgotpassword', 'forgotPassword')->name('forgotPassword');        
         Route::get('/signup', 'signup')->name('signup');
         Route::post('/logout', 'logout')->name('logout');
@@ -57,6 +60,13 @@ Route::prefix('transfer')->group(function () {
         Route::get('/transfer-history', 'transferHistory')->name('transferHistory');
     });
 });
+
+Route::post('/profile/update', [UsersController::class, 'updateProfile'])->name('profile.update');
+Route::post('/profile/changePassword', [UsersController::class, 'changePassword'])->name('profile.changePassword');
+Route::post('/profile/updateBankAccount', [UsersController::class, 'updateBankAccount'])->name('profile.updateBankAccount');
+
+
+
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('calendar','calendar')->name('calendar');
@@ -181,6 +191,8 @@ Route::prefix('users')->group(function () {
         Route::get('/view-profile', 'viewProfile')->name('viewProfile');
     });
 });
+
+
 
 // Users
 Route::prefix('blog')->group(function () {
