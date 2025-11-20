@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @php
-    $title = 'Mint Transactions';
-    $subTitle = 'Mint Transaction Report';
+    $title = 'Mint Token';
+    $subTitle = 'Mint Token Report';
 @endphp
 
 @section('content')
@@ -41,7 +41,7 @@
                 @forelse($mintReport as $index => $tx)
                 <tr>
                     <td>{{ $mintReport->firstItem() + $index }}</td>
-                    <td>{{ $tx['fullname'] ?? 'N/A' }}</td>                    
+                    <td>{{ $tx['fromusername'] ?? 'N/A' }}</td>                    
                     <td class="text-truncate" style="max-width: 250px;">{{ $tx['to_address'] ?? 'N/A' }}</td>
                     <td>{{ number_format($tx['amount'], 8) }}</td>
                     <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : 'N/A' }}</td>

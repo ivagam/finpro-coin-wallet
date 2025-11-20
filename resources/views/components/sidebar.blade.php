@@ -17,19 +17,24 @@
                     <span>Dashboard</span>
                 </a>               
             </li>
-            <li class="sidebar-menu-group-title">Application</li>
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span>Transaction</span>
+                    <span>Wallet</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                    <a href="{{ route('transfer') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Transfer Amount</a>
+                    <a href="{{ route('transfer') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i>Send Token</a>
                     </li>
                     <li>
                     <a href="{{ route('transferHistory') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Transaction History</a>
-                    </li>                    
+                    </li>    
+                    <li>
+                    <a href="{{ route('depositReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Deposit</a>
+                    </li>     
+                    <li>
+                    <a href="{{ route('withdrawalReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Withdrawal</a>
+                    </li>           
                 </ul>
             </li>
             <li class="dropdown">
@@ -59,6 +64,13 @@
                     <a href="{{ route('burnReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Burn Report</a>
                     </li>                    
                 </ul>
+            </li>
+              <li class="dropdown">
+                <a  href="{{ route('userList') }}">
+                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
+                    <span>Users</span>
+                </a>
+                
             </li>
             <li class="dropdown">
                 <a  href="javascript:void(0)">

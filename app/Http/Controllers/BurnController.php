@@ -55,10 +55,7 @@ class BurnController extends Controller
     {
         $token = session('token');
 
-        if (!$token) {
-            return redirect('/login')->with('error', 'Session expired, please login again.');
-        }
-
+       
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
         try {

@@ -35,6 +35,9 @@ Route::prefix('dashboard')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('index');        
     });
+     Route::controller(DashboardController::class)->group(function () {
+        Route::get('/userList', 'userList')->name('userList');        
+    });
 });
 
 Route::prefix('mint')->group(function () {
@@ -58,6 +61,10 @@ Route::prefix('transfer')->group(function () {
         Route::get('/', 'transfer')->name('transfer');
         Route::post('/', 'storeTransfer')->name('transfer.store');
         Route::get('/transfer-history', 'transferHistory')->name('transferHistory');
+        Route::get('/withdrawalReport', 'withdrawalReport')->name('withdrawalReport');
+        Route::post('/saveWithdrawal', 'saveWithdrawal')->name('transfer.saveWithdrawal');
+        Route::get('/depositReport', 'depositReport')->name('depositReport');
+        Route::post('/saveDeposit', 'saveDeposit')->name('transfer.saveDeposit');
     });
 });
 

@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @php
-    $title = 'Burn Transactions';
-    $subTitle = 'Burn Transaction Report';
+    $title = 'Burn Token Report';
+    $subTitle = 'Burn Token Report';
 @endphp
 
 @section('content')
@@ -41,8 +41,8 @@
                 @forelse($burnReport as $index => $tx)
                 <tr>
                     <td>{{ $burnReport->firstItem() + $index }}</td>
-                    <td>{{ $tx['fullname'] ?? 'N/A' }}</td>
-                    <td class="text-truncate" style="max-width: 250px;">{{ $tx['from_address'] ?? 'N/A' }}</td>
+                    <td>{{ $tx['fromusername'] ?? 'N/A' }}</td>
+                    <td class="text-truncate" style="max-width: 250px;">{{ $tx['to_address'] ?? 'N/A' }}</td>
                     <td>{{ number_format($tx['amount'], 8) }}</td>
                     <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : 'N/A' }}</td>
                 </tr>

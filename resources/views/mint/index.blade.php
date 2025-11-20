@@ -1,8 +1,8 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Add Mint';
-    $subTitle = 'Add Mint';
+    $title = 'Mint Token';
+    $subTitle = 'Mint Token';
 @endphp
 
 @section('content')
@@ -10,7 +10,7 @@
     <div class="col-lg-16">
         <div class="card mt-24">
             <div class="card-header border-bottom">
-                <h6 class="text-xl mb-0">Add Mint</h6>
+                <h6 class="text-xl mb-0">Mint Token</h6>
             </div>
             <div class="card-body p-24">
 
@@ -26,11 +26,11 @@
                     @csrf
 
                     {{-- Address --}}
-                    <div>
-                        <label for="address" class="form-label fw-bold">Address:</label>
+                    <div class="col-12">
+                        <label for="address" class="form-label fw-bold">Token Address:</label>
                         <input type="text" name="address" id="address"
                                class="form-control @error('address') is-invalid @enderror"
-                               placeholder="Enter Address"
+                               placeholder="Enter Token Address"
                                value="{{ old('address') }}">
                         @error('address')
                             <span class="text-danger">{{ $message }}</span>
@@ -38,18 +38,19 @@
                     </div>
 
                     {{-- Amount --}}
-                    <div>
-                        <label for="amount" class="form-label fw-bold">Amount:</label>
+                    <div class="col-12">
+                        <label for="amount" class="form-label fw-bold">Token Value:</label>
                         <input type="number" name="amount" id="amount"
                                class="form-control @error('amount') is-invalid @enderror"
-                               placeholder="Enter Amount"
+                               placeholder="Enter Token Value"
                                value="{{ old('amount') }}">
                         @error('amount')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
-                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                    </div>
                 </form>
 
             </div>
