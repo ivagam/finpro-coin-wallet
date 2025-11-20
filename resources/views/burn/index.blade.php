@@ -15,12 +15,7 @@
             <div class="card-body p-24">
 
                 {{-- Flash messages --}}
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if(session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
-                @endif
+                <x-alert />
 
                 <form action="{{ route('burn.store') }}" method="POST" class="d-flex flex-column gap-3">
                     @csrf

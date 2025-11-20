@@ -33,10 +33,10 @@ Route::controller(AuthenticationController::class)->group(function () {
 
 Route::prefix('dashboard')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
-        Route::get('/', 'index')->name('index');        
-    });
-     Route::controller(DashboardController::class)->group(function () {
-        Route::get('/userList', 'userList')->name('userList');        
+        Route::get('/', 'index')->name('index');    
+        Route::get('/userList', 'userList')->name('userList');
+        Route::post('/sendTokens', 'sendTokens')->name('dashboard.sendTokens');
+        Route::post('/withdraw', 'withdraw')->name('dashboard.withdraw');
     });
 });
 

@@ -143,14 +143,14 @@
                                                         <tr>
                                                             <td>
                                                             @if($tx['id'] == $cuser)  
- <div class="d-flex align-items-center gap-2">
+                                                        <div class="d-flex align-items-center gap-2">
                                                             <span class="text-success-main bg-success-focus w-32-px h-32-px d-flex align-items-center justify-content-center rounded-circle text-xl">
                                                                 <iconify-icon icon="tabler:arrow-up-right" class="icon"></iconify-icon>
                                                             </span>
                                                             <span class="fw-medium">FXC</span>
                                                         </div>
                                                             @else
- <div class="d-flex align-items-center gap-2">
+                                                        <div class="d-flex align-items-center gap-2">
                                                             <span class="text-danger-main bg-danger-focus w-32-px h-32-px d-flex align-items-center justify-content-center rounded-circle text-xl">
                                                                 <iconify-icon icon="tabler:arrow-down-left" class="icon"></iconify-icon>
                                                             </span>
@@ -187,136 +187,209 @@
                 <!-- Crypto Home Widgets End -->
 
                 <div class="col-xxl-4">
-                    <div class="row gy-4">
-                        @if($is_admin == 1)
-                         <div class="col-xxl-12 col-lg-6">
-                            <div class="card h-100">
-                                <div class="card-body p-24">
-                                    <span class="mb-4 text-sm text-secondary-light">Admin Wallet Balance</span>
-                                    <h6 class="mb-4">
-                                        {{ number_format($data['balance'], 2) }} 
-                                    </h6>
+        <div class="row gy-4">
 
-                                    <ul class="nav nav-pills pill-tab mb-24 mt-28 border input-form-light p-1 radius-8 bg-neutral-50" id="pills-tab" role="tablist">
-                                        <li class="nav-item w-50" role="presentation">
-                                            <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8 active" id="pills-Buy-tab" data-bs-toggle="pill" data-bs-target="#pills-Buy" type="button" role="tab" aria-controls="pills-Buy" aria-selected="true">Send</button>
-                                        </li>
-                                        <li class="nav-item w-50" role="presentation">
-                                            <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8" id="pills-Sell-tab" data-bs-toggle="pill" data-bs-target="#pills-Sell" type="button" role="tab" aria-controls="pills-Sell" aria-selected="false">Burn</button>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content" id="pills-tabContent">
-                                        <div class="tab-pane fade show active" id="pills-Buy" role="tabpanel" aria-labelledby="pills-Buy-tab" tabindex="0">
-                                            
-                                            <div class="mb-20">
-                                                <label for="tradeValue" class="fw-semibold mb-8 text-primary-light">Trade Value</label>
-                                                <div class="input-group input-group-lg border input-form-light radius-8">
-                                                    <input type="text" class="form-control bg-base border-0 radius-8" id="tradeValue" placeholder="Trade Value">
-                                                    <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md ps-1 pe-1">
-                                                        <select class="form-select form-select-sm w-auto bg-transparent fw-bolder border-0 text-secondary-light">
-                                                            <option class="bg-base">FXC</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+        @if($is_admin == 1)
+            <div class="col-xxl-12 col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body p-24">
+
+                        <span class="mb-4 text-sm text-secondary-light">Admin Wallet Balance</span>
+                        <h6 class="mb-4">{{ number_format($data['balance'], 2) }}</h6>
+
+                        <ul class="nav nav-pills pill-tab mb-24 mt-28 border input-form-light p-1 radius-8 bg-neutral-50" id="pills-tab" role="tablist">
+                            <li class="nav-item w-50">
+                                <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8 active"
+                                    id="pills-Buy-tab" data-bs-toggle="pill" data-bs-target="#pills-Buy"
+                                    type="button">Send</button>
+                            </li>
+                            <li class="nav-item w-50">
+                                <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8"
+                                    id="pills-Sell-tab" data-bs-toggle="pill" data-bs-target="#pills-Sell"
+                                    type="button">Burn</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+
+                            {{-- ========== ADMIN SEND FORM ========== --}}
+                            <div class="tab-pane fade show active" id="pills-Buy">
+
+                                <form method="POST" action="{{ route('dashboard.sendTokens') }}">
+                                    @csrf
+                                    <input type="hidden" name="type" value="send">
+
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
+                                        <div class="input-group input-group-lg border input-form-light radius-8">
+                                            <input type="number" name="amount" class="form-control bg-base border-0 radius-8"
+                                                placeholder="Trade Value" required>
+
+                                            <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
+                                                <select class="form-select form-select-sm bg-transparent fw-bolder border-0">
+                                                    <option>FXC</option>
+                                                </select>
                                             </div>
-                                            <div class="mb-20">
-                                                <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
-                                                <textarea class="form-control bg-base h-80-px radius-8" placeholder="Enter Address"></textarea>
-                                            </div>
-                                           
-                                            <a  href="" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8"> Transfer Now</a>
-                                        </div>
-                                        <div class="tab-pane fade" id="pills-Sell" role="tabpanel" aria-labelledby="pills-Sell-tab" tabindex="0">
-                                            <div class="mb-20">
-                                                <label for="estimatedValueSell" class="fw-semibold mb-8 text-primary-light">Trade Value</label>
-                                                <div class="input-group input-group-lg border input-form-light radius-8">
-                                                    <input type="text" class="form-control border-0 radius-8" id="estimatedValueSell" placeholder="Estimated Value">
-                                                    <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md ps-1 pe-1">
-                                                        <select class="form-select form-select-sm w-auto bg-transparent fw-bolder border-0 text-secondary-light">
-                                                            <option>FXC</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                              <div class="mb-20">
-                                                <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
-                                                <textarea class="form-control bg-base h-80-px radius-8" placeholder="Enter Address"></textarea>
-                                            </div>
-                                           
-                                            
-                                           
-                                            <a  href="" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">Submit</a>
                                         </div>
                                     </div>
 
-                                </div>
-                            </div>
-                        </div>
-                        @else
-                        <div class="col-xxl-12 col-lg-6">
-                            <div class="card h-100">
-                                <div class="card-body p-24">
-                                    <span class="mb-4 text-sm text-secondary-light">Total Balance</span>
-                                    <h6 class="mb-4">
-                                        {{ number_format($data['balance'], 2) }} 
-                                    </h6>
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
+                                        <textarea name="address" class="form-control bg-base h-80-px radius-8" placeholder="Enter Address" required></textarea>
+                                    </div>
 
-                                    <ul class="nav nav-pills pill-tab mb-24 mt-28 border input-form-light p-1 radius-8 bg-neutral-50" id="pills-tab" role="tablist">
-                                        <li class="nav-item w-50" role="presentation">
-                                            <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8 active" id="pills-Buy-tab" data-bs-toggle="pill" data-bs-target="#pills-Buy" type="button" role="tab" aria-controls="pills-Buy" aria-selected="true">Send</button>
-                                        </li>
-                                        <li class="nav-item w-50" role="presentation">
-                                            <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8" id="pills-Sell-tab" data-bs-toggle="pill" data-bs-target="#pills-Sell" type="button" role="tab" aria-controls="pills-Sell" aria-selected="false">Widthraw</button>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content" id="pills-tabContent">
-                                        <div class="tab-pane fade show active" id="pills-Buy" role="tabpanel" aria-labelledby="pills-Buy-tab" tabindex="0">
-                                            
-                                            <div class="mb-20">
-                                                <label for="tradeValue" class="fw-semibold mb-8 text-primary-light">Trade Value</label>
-                                                <div class="input-group input-group-lg border input-form-light radius-8">
-                                                    <input type="text" class="form-control bg-base border-0 radius-8" id="tradeValue" placeholder="Trade Value">
-                                                    <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md ps-1 pe-1">
-                                                        <select class="form-select form-select-sm w-auto bg-transparent fw-bolder border-0 text-secondary-light">
-                                                            <option class="bg-base">FXC</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                    <button type="submit" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
+                                        Transfer Now
+                                    </button>
+                                     
+                                    <x-alert />
+                                    
+                                </form>
+
+                            </div>
+
+                            {{-- ========== ADMIN BURN FORM ========== --}}
+                            <div class="tab-pane fade" id="pills-Sell">
+
+                                <form method="POST" action="{{ route('dashboard.sendTokens') }}">
+                                    @csrf
+                                    <input type="hidden" name="type" value="burn">
+
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
+                                        <div class="input-group input-group-lg border input-form-light radius-8">
+                                            <input type="number" name="amount" class="form-control border-0 radius-8"
+                                                placeholder="Estimated Value" required>
+
+                                            <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
+                                                <select class="form-select form-select-sm bg-transparent fw-bolder border-0">
+                                                    <option>FXC</option>
+                                                </select>
                                             </div>
-                                            <div class="mb-20">
-                                                <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
-                                                <textarea class="form-control bg-base h-80-px radius-8" placeholder="Enter Address"></textarea>
-                                            </div>
-                                           
-                                            <a  href="" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8"> Transfer Now</a>
-                                        </div>
-                                        <div class="tab-pane fade" id="pills-Sell" role="tabpanel" aria-labelledby="pills-Sell-tab" tabindex="0">
-                                            <div class="mb-20">
-                                                <label for="estimatedValueSell" class="fw-semibold mb-8 text-primary-light">Trade Value</label>
-                                                <div class="input-group input-group-lg border input-form-light radius-8">
-                                                    <input type="text" class="form-control border-0 radius-8" id="estimatedValueSell" placeholder="Estimated Value">
-                                                    <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md ps-1 pe-1">
-                                                        <select class="form-select form-select-sm w-auto bg-transparent fw-bolder border-0 text-secondary-light">
-                                                            <option>FXC</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                           
-                                            
-                                           
-                                            <a  href="" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">Submit</a>
                                         </div>
                                     </div>
 
-                                </div>
+                                    {{-- 🔥 ADDED BURN ADDRESS FIELD --}}
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Burn Address</label>
+                                        <textarea name="address" class="form-control bg-base h-80-px radius-8"
+                                                placeholder="Enter Burn Address" required></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
+                                        Submit
+                                    </button>
+                                    
+                                    <x-alert />
+                                    
+                                </form>
+
                             </div>
+
                         </div>
-                        @endif
-                        
+
                     </div>
                 </div>
-
             </div>
+        @else
+            <div class="col-xxl-12 col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body p-24">
+
+                        <span class="mb-4 text-sm text-secondary-light">Total Balance</span>
+                        <h6 class="mb-4">{{ number_format($data['balance'], 2) }}</h6>
+
+                        <ul class="nav nav-pills pill-tab mb-24 mt-28 border input-form-light p-1 radius-8 bg-neutral-50" id="pills-tab" role="tablist">
+                            <li class="nav-item w-50" role="presentation">
+                                <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8 active"
+                                    id="pills-Send-tab" data-bs-toggle="pill" data-bs-target="#pills-Send"
+                                    type="button" role="tab" aria-controls="pills-Send" aria-selected="true">
+                                    Send
+                                </button>
+                            </li>
+
+                            <li class="nav-item w-50" role="presentation">
+                                <button class="nav-link px-12 py-10 text-md w-100 text-center radius-8"
+                                    id="pills-Withdraw-tab" data-bs-toggle="pill" data-bs-target="#pills-Withdraw"
+                                    type="button" role="tab" aria-controls="pills-Withdraw" aria-selected="false">
+                                    Withdraw
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="pills-tabContent">
+
+                            {{-- ================= SEND FORM ================= --}}
+                            <div class="tab-pane fade show active" id="pills-Send" role="tabpanel" aria-labelledby="pills-Send-tab">
+
+                                <form method="POST" action="{{ route('dashboard.sendTokens') }}">
+                                    @csrf
+                                    <input type="hidden" name="type" value="send">
+
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
+                                        <div class="input-group input-group-lg border input-form-light radius-8">
+                                            <input type="text" name="amount" class="form-control bg-base border-0 radius-8"
+                                                placeholder="Trade Value" required>
+
+                                            <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
+                                                <select class="form-select form-select-sm bg-transparent fw-bolder border-0">
+                                                    <option>FXC</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
+                                        <textarea name="address" class="form-control bg-base h-80-px radius-8"
+                                            placeholder="Enter Address" required></textarea>
+                                    </div>
+
+                                    <button class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
+                                        Transfer Now
+                                    </button>
+
+                                    <x-alert />
+                                </form>
+
+                            </div>
+
+                            {{-- ================= WITHDRAW / BURN FORM ================= --}}
+                            <div class="tab-pane fade" id="pills-Withdraw" role="tabpanel" aria-labelledby="pills-Withdraw-tab">
+
+                                <form method="POST" action="{{ route('dashboard.withdraw') }}">
+                                    @csrf
+                                    <input type="hidden" name="type" value="burn">
+
+                                    <div class="mb-20">
+                                        <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
+                                        <div class="input-group input-group-lg border input-form-light radius-8">
+                                            <input type="text" name="amount" class="form-control bg-base border-0 radius-8"
+                                                placeholder="Enter Amount" required>
+
+                                            <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
+                                                <select class="form-select form-select-sm bg-transparent fw-bolder border-0">
+                                                    <option>FXC</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
+                                        Submit
+                                    </button>
+
+                                    <x-alert />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+        </div>
+    </div>
+</div>
             
 @endsection

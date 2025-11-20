@@ -40,7 +40,7 @@
                     <tr>
                         <td>{{ $tx['fullname'] ?? '-' }}</td>
                         <td>{{ number_format($tx['amount'], 8) }}</td>
-                        <td>{{ $tx['request_id'] }}</td>
+                        <td>{{ $tx['transaction_id'] }}</td>
                        
                         <td>
                               @if($tx['status'] == '1')

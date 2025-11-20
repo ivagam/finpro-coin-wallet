@@ -19,18 +19,9 @@
                     <h4 class="mb-12">Forgot Password</h4>
                     <p class="mb-32 text-secondary-light text-lg">Enter the email address associated with your account and we will send your password.</p>
                 </div>
- @if(session('success'))
-                                    <div class="alert alert-success">{{ session('success') }}</div>
-                                    @endif
-                                    @if($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                        @foreach($errors->all() as $err)
-                                            <li>{{ $err }}</li>
-                                        @endforeach
-                                        </ul>
-                                    </div>
-                                    @endif
+            
+            <x-alert />
+
             <form id="signin-form" action="{{ url('/sendPassword') }}" method="POST">
                 @csrf
                     <div class="icon-field">

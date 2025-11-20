@@ -83,7 +83,6 @@ class UsersController extends Controller
         // Use Guzzle client
         $client = new Client([
             'timeout' => 60,
-            //'verify' => false, // if you hit SSL issues in dev (not recommended)
         ]);
 
         try {
@@ -126,44 +125,45 @@ class UsersController extends Controller
 
     // Accept form submit and forward to Node API
     public function changePassword(Request $request)
-    {
+    {        
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
-        // minimal validation for required non-file fields
         try {
-
             $request->validate([
                 'current_pass' => 'required|string|max:255',
-                'new_pass'    => 'required|string|max:255',
-                'confirm_pass'    => 'required|string|max:255|same:new_pass',
+                'new_pass'     => 'required|string|max:255',
+                'confirm_pass' => 'required|string|max:255|same:new_pass',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
-                    ->withErrors($e->validator)
-                    ->withInput() // ensures old() is available
-                    ->with('active_tab', 'pills-change-passwork');
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('active_tab', 'pills-change-passwork');
         }
 
-         try {
+        try {
             $response = Http::withToken($token)->post("{$apiBase}/api/change-password", [
                 'current_pass' => $request->current_pass,
-                'new_pass' => $request->new_pass
+                'new_pass'     => $request->new_pass
             ]);
-
-            if ($response->failed()) {
-                return redirect()->back()->with('error', 'change password request failed: ' . $response->body())->with('active_tab', 'pills-change-passwork');
-            }
 
             $data = $response->json();
 
-            if (($data['status'] ?? '') === 'ok') {
-                return redirect()->back()->with('success', 'Password updated successfully!')->with('active_tab', 'pills-change-passwork');
-            } else {
-                return redirect()->back()->with('error', 'invalide current password')->with('active_tab', 'pills-change-passwork');
+            if ($response->failed()) {
+                return redirect()->back()
+                    ->with('error', $data['message'] ?? 'Password change failed')
+                    ->with('active_tab', 'pills-change-passwork');
             }
+
+            return redirect()->back()
+                ->with('success', 'Password updated successfully!')
+                ->with('active_tab', 'pills-change-passwork');
+
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage())->with('active_tab','pills-change-passwork');
+            return redirect()->back()
+                ->with('error', 'Server error: ' . $e->getMessage())
+                ->with('active_tab', 'pills-change-passwork');
         }
     }
 
@@ -177,7 +177,7 @@ class UsersController extends Controller
         try{
             $request->validate([
                 'account_holder_name' => 'required|string|max:255',
-                'account_no'    => 'required|email|max:255',
+                'account_no'    => 'required|string|max:30',
                 'ifsc'    => 'required|string|max:30',
                 'bank_name'    => 'required|string|max:30',
             ]);
@@ -249,10 +249,15 @@ class UsersController extends Controller
         Log::info("Node update-profile response", ['status'=>$status, 'headers'=>$headers, 'body'=>substr($body,0,2000)]);
 
         if ($status >= 200 && $status < 300) {
-            return redirect()->back()->with('success', 'Profile updated successfully.')->with('active_tab','pills-edit-profile-tab');
+
+            $json = json_decode($body, true);
+            $msg = $json['message'] ?? 'Success';
+
+            return redirect()->back()
+                ->with('success', $msg)
+                ->with('active_tab','pills-notification');
         }
 
-        // If we reach here, return useful error
         return redirect()->back()->withErrors("Node API returned HTTP {$status}: " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
     }
 

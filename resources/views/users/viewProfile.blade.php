@@ -157,18 +157,9 @@
                 </div>
                 <div class="col-lg-8">
                     <div class="card h-100">
-                          @if(session('success'))
-                                    <div class="alert alert-success">{{ session('success') }}</div>
-                                    @endif
-                                    @if($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                        @foreach($errors->all() as $err)
-                                            <li>{{ $err }}</li>
-                                        @endforeach
-                                        </ul>
-                                    </div>
-                                    @endif
+                        
+                    <x-alert />
+                    
                         <div class="card-body p-24">
                             <ul class="nav border-gradient-tab nav-pills mb-20 d-inline-flex" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
@@ -313,41 +304,42 @@
                                  
                                     <form action="{{ route('profile.changePassword') }}" method="POST">
                                         @csrf
-                                    <div class="mb-20">
-                                        <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Current Password <span class="text-danger-600">*</span></label>
-                                        <div class="position-relative">
-                                            <input type="password" class="form-control radius-8" name="current_pass" id="current_pass" placeholder="Enter Current Password*">
-                                            <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+                                        <div class="mb-20">
+                                            <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Current Password <span class="text-danger-600">*</span></label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control radius-8" name="current_pass" id="current_pass" placeholder="Enter Current Password*">
+                                                <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-20">
-                                        <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">New Password <span class="text-danger-600">*</span></label>
-                                        <div class="position-relative">
-                                            <input type="password" class="form-control radius-8" name="new_pass" id="new_pass" placeholder="Enter New Password*">
-                                            <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+                                        <div class="mb-20">
+                                            <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">New Password <span class="text-danger-600">*</span></label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control radius-8" name="new_pass" id="new_pass" placeholder="Enter New Password*">
+                                                <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-20">
-                                        <label for="confirm-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmed Password <span class="text-danger-600">*</span></label>
-                                        <div class="position-relative">
-                                            <input type="password" class="form-control radius-8" name="confirm_pass" id="confirm_pass" placeholder="Confirm Password*">
-                                            <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#confirm-password"></span>
+                                        <div class="mb-20">
+                                            <label for="confirm-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmed Password <span class="text-danger-600">*</span></label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control radius-8" name="confirm_pass" id="confirm_pass" placeholder="Confirm Password*">
+                                                <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#confirm-password"></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-center gap-3">
-                                           <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
-                                                Cancel
-                                            </button> </a>
-                                            <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
-                                                Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-3">
+                                            <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                                    Cancel
+                                                </button> </a>
+                                                <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                                    Save
+                                                </button>
+                                            </div>
+                                    </form>
+                                </div>                                    
+                            </div>
 
                                 <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
                                      <form action="{{ route('profile.updateBankAccount') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
+                                        @csrf                                        
                                         <div class="row">
                                             <input type="hidden" name="bank_acc_id" value="{{$user['bank_acc_id']}}"/>
                                             <div class="col-sm-6">
@@ -415,8 +407,6 @@
                                         </div>
                                     </form>
                                 </div>
-
-                            </div>
                         </div>
                     </div>
                 </div>

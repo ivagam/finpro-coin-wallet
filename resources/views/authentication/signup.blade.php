@@ -21,18 +21,9 @@
                     <h4 class="mb-12">Sign Up to your Account</h4>
                     <p class="mb-32 text-secondary-light text-lg">Welcome back! please enter your detail</p>
                 </div>
-                 @if(session('success'))
-                                    <div class="alert alert-success">{{ session('success') }}</div>
-                                    @endif
-                                    @if($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                        @foreach($errors->all() as $err)
-                                            <li>{{ $err }}</li>
-                                        @endforeach
-                                        </ul>
-                                    </div>
-                                    @endif
+                
+            <x-alert />
+
             <form id="signin-form" action="{{ url('/register') }}" method="POST">
                 @csrf
                     <div class="icon-field mb-16">
