@@ -2,20 +2,22 @@
 @php
     $title = 'User List';
     $subTitle = 'User List';
+    $script = '<script>
+                    let table = new DataTable("#dataTable");
+               </script>';
 @endphp
 
 @section('content')
 <div class="card basic-data-table">
     <div class="card-header">
-        <h5 class="card-title mb-0">User List 
-     
+        <h5 class="card-title mb-0">User List     
         </h5>
     </div>
 
     <div class="card-body">
         <!-- Responsive table container -->
         <div class="table-responsive">
-            <table class="table bordered-table mb-0 align-middle text-nowrap">
+            <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -24,8 +26,7 @@
                         <th>Phone No</th>
                         <th>Status</th>
                         <th>Created Date</th>                        
-                        <th>Action</th>
-                        
+                        <th>Action</th>                        
                     </tr>
                 </thead>
                 <tbody>

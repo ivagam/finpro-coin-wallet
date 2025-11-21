@@ -2,6 +2,9 @@
 @php
     $title = 'Withdrawal Report';
     $subTitle = 'Withdrawal Report';
+    $script = '<script>
+                    let table = new DataTable("#dataTable");
+               </script>';
 @endphp
 
 @section('content')
@@ -21,7 +24,7 @@
     <div class="card-body">
         <!-- Responsive table container -->
         <div class="table-responsive">
-            <table class="table bordered-table mb-0 align-middle text-nowrap">
+            <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
                 <thead>
                     <tr>
                         <th>User</th>
@@ -52,10 +55,17 @@
                         <td>{{ isset($tx['approved_at']) ? \Carbon\Carbon::parse($tx['approved_at'])->format('d/m/Y') : '-' }}</td>
                         <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : '-' }}</td>
                         @if($is_admin == 1)
-                        <td>
-                            <span class="bg-success-focus text-success-main px-16 py-4 radius-4 fw-medium text-sm">Approve</span>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center gap-10">
+                                <button type="button"
+                                        class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle approveBtn"
+                                        data-id="{{ $tx['withdrawal_id'] }}"
+                                        data-request="{{ $tx['request_id'] }}"
+                                        data-amount="{{ $tx['amount'] }}">
+                                    <iconify-icon icon="mdi:check" class="menu-icon"></iconify-icon>
+                                </button>
+                            </div>
                         </td>
-
                         @endif
                     </tr>
                     @empty
@@ -106,4 +116,88 @@
         </div>
     </div>
 
+
+
+    <div class="modal fade" id="approveModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 bg-base">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Withdrawal Approval</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="text-center fw-bold fs-5">
+                    Are you sure you want to approve this withdrawal request?
+                </p>
+                <p class="text-center">
+                    <span class="text-primary fw-bold">Request ID: </span>
+                    <span id="modalRequestId"></span><br>
+                    <span class="text-primary fw-bold">Amount: </span>
+                    <span id="modalAmount"></span>
+                </p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success" id="confirmApproveBtn">Yes, Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    let selectedId = null;
+
+    // OPEN MODAL WHEN ADMIN CLICKS APPROVE BUTTON
+    document.addEventListener("click", function(e) {
+
+        let btn = e.target.closest(".approveBtn");
+        if (!btn) return;
+
+        selectedId = btn.dataset.id;
+
+        document.getElementById("modalRequestId").textContent = btn.dataset.request;
+        document.getElementById("modalAmount").textContent = btn.dataset.amount;
+
+        let approveModal = new bootstrap.Modal(document.getElementById('approveModal'));
+        approveModal.show();
+    });
+
+    // CONFIRM APPROVAL BUTTON
+    const confirmBtn = document.getElementById("confirmApproveBtn");
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener("click", function() {
+
+            if (!selectedId) return;
+
+            fetch("{{ route('transfer.approve') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ withdrawal_id: selectedId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "ok") {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => alert("Server error"));
+        });
+    }
+
+});
+</script>
+@endpush

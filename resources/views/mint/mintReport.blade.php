@@ -2,45 +2,30 @@
 @php
     $title = 'Mint Token';
     $subTitle = 'Mint Token Report';
+    $script = '<script>
+                    let table = new DataTable("#dataTable");
+               </script>';
 @endphp
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div class="d-flex flex-wrap align-items-center gap-3">
-            <div class="d-flex align-items-center gap-2">
-                <span>Show</span>
-                <select class="form-select form-select-sm w-auto">
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                </select>
-            </div>
-            <div class="icon-field">
-                <input type="text" name="search" class="form-control form-control-sm w-auto" placeholder="Search">
-                <span class="icon">
-                    <iconify-icon icon="ion:search-outline"></iconify-icon>
-                </span>
-            </div>
-        </div>
-    </div>
+<div class="card basic-data-table">
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table bordered-table mb-0 align-middle text-nowrap">
+            <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
                 <thead>
                     <tr>
-                    <th style="width: 5%;">S.L</th>
-                    <th style="width: 10%;">User</th>
-                    <th style="width: 35%;">Address</th>                    
-                    <th style="width: 20%;">Amount</th>
-                    <th style="width: 20%;">Date</th>
+                    <th>S.L</th>
+                    <th>User</th>
+                    <th>Address</th>                    
+                    <th>Amount</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($mintReport as $index => $tx)
                 <tr>
-                    <td>{{ $mintReport->firstItem() + $index }}</td>
+                    <td>{{ $index + 1 }}</td>
                     <td>{{ $tx['fromusername'] ?? 'N/A' }}</td>                    
                     <td class="text-truncate" style="max-width: 250px;">{{ $tx['to_address'] ?? 'N/A' }}</td>
                     <td>{{ number_format($tx['amount'], 8) }}</td>
@@ -54,13 +39,7 @@
             </tbody>
         </table>
         </div>
-
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-24">
-            <span>Showing {{ $mintReport->count() }} of {{ $mintReport->total() }} entries</span>
-            <div>
-                {{ $mintReport->links() }}
-            </div>
-        </div>
+        
     </div>
 </div>
 @endsection

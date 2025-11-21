@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class MintController extends Controller
@@ -72,21 +71,7 @@ class MintController extends Controller
             $data = $response->json();
             $mintReport = $data['data'] ?? [];
 
-            // Manual pagination
-            $perPage = 10;
-            $page = (int) $request->get('page', 1);
-            $collection = collect($mintReport);
-            $paginatedItems = $collection->slice(($page - 1) * $perPage, $perPage)->values();
-
-            $paginated = new LengthAwarePaginator(
-                $paginatedItems,
-                $collection->count(),
-                $perPage,
-                $page,
-                ['path' => request()->url(), 'query' => request()->query()]
-            );
-
-            return view('mint.mintReport', ['mintReport' => $paginated]);
+            return view('mint.mintReport', ['mintReport' => $mintReport]);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());

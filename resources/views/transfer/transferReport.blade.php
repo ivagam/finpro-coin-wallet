@@ -2,6 +2,9 @@
 @php
     $title = 'Transaction History';
     $subTitle = 'Transaction History Report';
+    $script = '<script>
+                    let table = new DataTable("#dataTable");
+               </script>';
 @endphp
 
 @section('content')
@@ -13,15 +16,15 @@
     <div class="card-body">
         <!-- Responsive table container -->
         <div class="table-responsive">
-            <table class="table bordered-table mb-0 align-middle text-nowrap">
+            <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
                 <thead>
                     <tr>
-                        <th style="width: 5%;">S.L</th>
+                        <th>S.L</th>
                         <th>From User</th>
                         <th>To User</th>
-                        <th style="width: 25%;">From Address</th>
-                        <th style="width: 25%;">To Address</th>
-                        <th style="width: 15%;">Amount</th>
+                        <th>From Address</th>
+                        <th>To Address</th>
+                        <th>Amount</th>
                         <th>Type</th>
                         <th>Date</th>
                     </tr>
@@ -29,7 +32,7 @@
                 <tbody>
                     @forelse($transactions as $index => $tx)
                     <tr>
-                        <td>{{ $transactions->firstItem() + $index }}</td>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $tx['fromusername'] ?? '-' }}</td>
                         <td>{{ $tx['tousername'] ?? '-' }}</td>
                         <td class="text-truncate" style="max-width: 250px;">{{ $tx['from_address'] ?? 'N/A' }}</td>
@@ -47,13 +50,6 @@
             </table>
         </div>
 
-        <!-- Pagination and summary -->
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3">
-            <span>Showing {{ $transactions->count() }} of {{ $transactions->total() }} entries</span>
-            <div>
-                {{ $transactions->appends(request()->query())->links() }}
-            </div>
-        </div>
     </div>
 </div>
 @endsection

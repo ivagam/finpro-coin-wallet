@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Http;
 
 class TransactionController extends Controller
@@ -81,21 +80,8 @@ class TransactionController extends Controller
             $data = $response->json();
             $transactions = $data['data'] ?? [];
             
-            $perPage = 10;
-            $page = (int) $request->get('page', 1);
-            $collection = collect($transactions);
-            $paginatedItems = $collection->slice(($page - 1) * $perPage, $perPage)->values();
-
-            $paginated = new LengthAwarePaginator(
-                $paginatedItems,                
-                $collection->count(),
-                $perPage,
-                $page,
-                ['path' => request()->url(), 'query' => request()->query()]
-            );
-
             return view('transfer.transferReport', [
-                'transactions' => $paginated
+                'transactions' => $transactions
             ]);
 
         } catch (\Exception $e) {
@@ -124,6 +110,7 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
     }
+
     public function depositReport(Request $request)
     {
         $token = session('token');      
@@ -226,4 +213,16 @@ class TransactionController extends Controller
         return redirect()->back()->withErrors("Node API returned HTTP {$status}: " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
     }
     
+    public function approveWithdraw(Request $request)
+    {
+        $token = session('token');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        $response = Http::withToken($token)
+            ->post("{$apiBase}/api/withdraw/approve", [
+                "withdrawal_id" => $request->withdrawal_id
+            ]);
+
+        return $response->json();
+    }
 }

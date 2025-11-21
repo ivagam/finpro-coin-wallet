@@ -65,6 +65,7 @@ Route::prefix('transfer')->group(function () {
         Route::post('/saveWithdrawal', 'saveWithdrawal')->name('transfer.saveWithdrawal');
         Route::get('/depositReport', 'depositReport')->name('depositReport');
         Route::post('/saveDeposit', 'saveDeposit')->name('transfer.saveDeposit');
+        Route::post('/approve', 'approveWithdraw')->name('transfer.approve');
     });
 });
 

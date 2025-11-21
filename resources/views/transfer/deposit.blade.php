@@ -2,6 +2,9 @@
 @php
     $title = 'Deposit Report';
     $subTitle = 'Deposit Report';
+    $script = '<script>
+                    let table = new DataTable("#dataTable");
+               </script>';
 @endphp
 
 @section('content')
@@ -13,7 +16,7 @@
 
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
                         Deposit Amount
-</button>
+                </button>
                 @endif
             </h5>
     </div>
@@ -21,7 +24,7 @@
     <div class="card-body">
         <!-- Responsive table container -->
         <div class="table-responsive">
-            <table class="table bordered-table mb-0 align-middle text-nowrap">
+            <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
                 <thead>
                     <tr>
                         <th>User</th>
