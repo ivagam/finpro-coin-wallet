@@ -80,7 +80,8 @@ Route::middleware([SessionAuth::class])->group(function () {
             Route::get('/withdrawalReport', 'withdrawalReport')->name('withdrawalReport');
             Route::post('/ajaxWithdrawal', 'ajaxWithdrawal')->name('ajaxWithdrawal');
             Route::get('/depositReport', 'depositReport')->name('depositReport');
-            Route::post('/approve', 'approveWithdraw')->name('transfer.approve');
+            Route::post('/approveWithdraw', 'approveWithdraw')->name('transfer.approve');
+            Route::post('/approveDeposit', 'approveDeposit')->name('deposit.approve');
             Route::post('/saveDeposit', 'saveDeposit')->name('saveDeposit');
             Route::post('/ajaxSend', 'ajaxSend')->name('ajaxSend');
         });

@@ -354,10 +354,24 @@ class TransactionController extends Controller
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
         $response = Http::withToken($token)
-            ->post("{$apiBase}/api/withdraw/approve", [
+            ->post("{$apiBase}/api/approve-withdrawal", [
                 "withdrawal_id" => $request->withdrawal_id
             ]);
 
         return $response->json();
     }
+
+    public function approveDeposit(Request $request)
+    {
+        $token = session('token');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        $response = Http::withToken($token)
+            ->post("{$apiBase}/api/approve-deposit", [
+                "deposit_id" => $request->deposit_id
+            ]);
+
+        return $response->json();
+    }
+
 }
