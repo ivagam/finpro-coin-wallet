@@ -2,7 +2,6 @@
 @php
     $title='Dashboard';
     $subTitle = 'Cryptocracy';
-    $script = ' <script src="' . asset('assets/js/homeFourChart.js') . '"></script>';
 @endphp
 
 @section('content')
@@ -114,8 +113,14 @@
 
                 <!-- Crypto Home Widgets Start -->
                 <div class="col-xxl-8">
+                   
                     <div class="row gy-4">
                         <div class="col-xxl-12">
+                            <div style="margin-bottom:15px" class="p-16 bg-neutral-50 radius-8 border-start-width-3-px border-neutral-600 border-top-0 border-end-0 border-bottom-0">
+                                        <h6 class="text-primary-light text-md mb-8">Token Address</h6>
+                                        <span class="text-primary-light mb-0">{{ session('user.address') }}</span>
+                                    </div>
+
                             <div class="card h-100">
                                 <div class="card-body p-24">
                                     <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
@@ -215,14 +220,14 @@
                             {{-- ========== ADMIN SEND FORM ========== --}}
                             <div class="tab-pane fade show active" id="pills-Buy">
 
-                                <form method="POST" action="{{ route('dashboard.sendTokens') }}">
+                                <form id="transferForm" class="ajax-form" method="POST" action="{{ route('ajaxSend') }}">
                                     @csrf
                                     <input type="hidden" name="type" value="send">
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="number" name="amount" class="form-control bg-base border-0 radius-8"
+                                            <input type="number" id="t_amount" name="amount" class="form-control bg-base border-0 radius-8"
                                                 placeholder="Trade Value" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
@@ -235,30 +240,33 @@
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
-                                        <textarea name="address" class="form-control bg-base h-80-px radius-8" placeholder="Enter Address" required></textarea>
+                                        <textarea name="address" id="t_address" class="form-control bg-base h-80-px radius-8" placeholder="Enter Address" required></textarea>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
-                                        Transfer Now
+                                    <button type="submit" class="btn btn-primary ajax-submit">
+                                        <span class="btn-text">Send</span>
+                                        <span class="spinner-border spinner-border-sm ms-2" role="status" style="display:none"></span>
                                     </button>
                                      
                                     <x-alert />
                                     
                                 </form>
+                                <div id="transferMessage" class="mt-2"></div>
+
 
                             </div>
 
                             {{-- ========== ADMIN BURN FORM ========== --}}
                             <div class="tab-pane fade" id="pills-Sell">
 
-                                <form method="POST" action="{{ route('dashboard.sendTokens') }}">
+                                <form id="burnForm" method="POST" action="{{ route('ajaxBurn') }}">
                                     @csrf
                                     <input type="hidden" name="type" value="burn">
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="number" name="amount" class="form-control border-0 radius-8"
+                                            <input type="number" name="amount" id="amount" class="form-control border-0 radius-8"
                                                 placeholder="Estimated Value" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
@@ -267,25 +275,31 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="invalid-feedback" id="error-amount"></div>
+
                                     </div>
 
                                     {{-- 🔥 ADDED BURN ADDRESS FIELD --}}
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Burn Address</label>
-                                        <textarea name="address" class="form-control bg-base h-80-px radius-8"
+                                        <textarea name="address" id="address" class="form-control bg-base h-80-px radius-8"
                                                 placeholder="Enter Burn Address" required></textarea>
+                                                <div class="invalid-feedback" id="error-address"></div>
+
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
-                                        Submit
+                                    <button type="submit" id="burnSubmit" class="btn btn-primary">
+                                    <span id="burnBtnText">Burn</span>
+                                    <span id="burnSpinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display:none"></span>
                                     </button>
                                     
                                     <x-alert />
                                     
                                 </form>
+                                <div id="burnMessage" style="margin-top:12px;"></div>
+
 
                             </div>
-
                         </div>
 
                     </div>
@@ -322,14 +336,14 @@
                             {{-- ================= SEND FORM ================= --}}
                             <div class="tab-pane fade show active" id="pills-Send" role="tabpanel" aria-labelledby="pills-Send-tab">
 
-                                <form method="POST" action="{{ route('dashboard.sendTokens') }}">
+                                  <form id="transferForm" class="ajax-form" method="POST" action="{{ route('ajaxSend') }}">
                                     @csrf
                                     <input type="hidden" name="type" value="send">
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="text" name="amount" class="form-control bg-base border-0 radius-8"
+                                            <input type="number" id="t_amount" name="amount" class="form-control bg-base border-0 radius-8"
                                                 placeholder="Trade Value" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
@@ -342,16 +356,18 @@
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
-                                        <textarea name="address" class="form-control bg-base h-80-px radius-8"
-                                            placeholder="Enter Address" required></textarea>
+                                        <textarea name="address" id="t_address" class="form-control bg-base h-80-px radius-8" placeholder="Enter Address" required></textarea>
                                     </div>
 
-                                    <button class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
-                                        Transfer Now
+                                    <button type="submit" class="btn btn-primary ajax-submit">
+                                        <span class="btn-text">Send</span>
+                                        <span class="spinner-border spinner-border-sm ms-2" role="status" style="display:none"></span>
                                     </button>
-
+                                     
                                     <x-alert />
+                                    
                                 </form>
+                                <div id="transferMessage" class="mt-2"></div>
 
                             </div>
 
@@ -390,6 +406,216 @@
         @endif
         </div>
     </div>
-</div>
-            
+</div>     
 @endsection
+
+<script>
+(function () {
+  // Run when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    // Get elements (will be null if not present on the page)
+    const burnForm = document.getElementById('burnForm');
+    if (!burnForm) return; // do nothing on pages without the form
+
+    const submitBtn = document.getElementById('burnSubmit') || burnForm.querySelector('[type="submit"]');
+    const spinner = document.getElementById('burnSpinner');
+    const btnText = document.getElementById('burnBtnText');
+    const messageEl = document.getElementById('burnMessage');
+
+    // Utility: show message
+    function showMessage(html, type = 'info') {
+      if (!messageEl) return console.log('Message:', html);
+      const cls = {
+        success: 'alert alert-success',
+        danger: 'alert alert-danger',
+        warning: 'alert alert-warning',
+        info: 'alert alert-info'
+      }[type] || 'alert alert-info';
+      messageEl.innerHTML = `<div class="${cls}">${html}</div>`;
+    }
+
+    // Utility: clear server-side validation errors
+    function clearErrors() {
+      ['address', 'amount'].forEach(name => {
+        const err = document.getElementById('error-' + name);
+        if (err) { err.textContent = ''; err.style.display = 'none'; }
+        const input = burnForm.querySelector(`[name="${name}"]`);
+        if (input) input.classList.remove('is-invalid');
+      });
+    }
+
+    // Utility: display validation errors from Laravel
+    function showValidationErrors(errors = {}) {
+      Object.entries(errors).forEach(([k, v]) => {
+        const input = burnForm.querySelector(`[name="${k}"]`);
+        const errDiv = document.getElementById('error-' + k);
+        if (input) input.classList.add('is-invalid');
+        if (errDiv) { errDiv.textContent = Array.isArray(v) ? v[0] : v; errDiv.style.display = 'block'; }
+      });
+    }
+
+    // Main submit handler (async + catches errors)
+    burnForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      clearErrors();
+      if (messageEl) messageEl.innerHTML = '';
+
+      // collect form data
+      const formData = new FormData(burnForm);
+      const data = Object.fromEntries(formData.entries());
+
+      // UX: disable button + show spinner
+      if (submitBtn) submitBtn.disabled = true;
+      if (spinner) spinner.style.display = 'inline-block';
+      if (btnText) btnText.setAttribute('aria-hidden', 'true');
+
+      // CSRF token from meta (Laravel)
+      const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+      const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
+
+      try {
+        const res = await fetch(burnForm.action, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken || '',      // Laravel CSRF
+            'X-Requested-With': 'XMLHttpRequest', // identify AJAX
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        // Try to parse JSON safely
+        let payload = {};
+        try { payload = await res.json(); } catch (err) { payload = {}; }
+
+        if (res.ok) {
+          // success
+          showMessage(payload.message || 'Burn successful!', 'success');
+          burnForm.reset();
+        } else if (res.status === 422 && payload.errors) {
+          // validation errors
+          showValidationErrors(payload.errors);
+          showMessage('Please fix the validation errors.', 'warning');
+        } else {
+          // other server errors
+          const errMsg = payload.message || payload.error || `Server error (${res.status})`;
+          showMessage(errMsg, 'danger');
+        }
+      } catch (err) {
+        // network or unexpected error (caught to prevent Uncaught)
+        console.error('Network/Unexpected error:', err);
+        showMessage('Network error — please try again later.', 'danger');
+      } finally {
+        // restore UI
+        if (submitBtn) submitBtn.disabled = false;
+        if (spinner) spinner.style.display = 'none';
+        if (btnText) btnText.removeAttribute('aria-hidden');
+      }
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  document.addEventListener('DOMContentLoaded', () => {
+    // Helper to show messages per-form
+    function showMessage(container, html, type = 'info') {
+      if (!container) { console.log(html); return; }
+      const cls = {
+        success: 'alert alert-success',
+        danger: 'alert alert-danger',
+        warning: 'alert alert-warning',
+        info: 'alert alert-info'
+      }[type] || 'alert alert-info';
+      container.innerHTML = `<div class="${cls}">${html}</div>`;
+    }
+
+    function clearValidation(form) {
+      form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      form.querySelectorAll('.invalid-feedback').forEach(div => { div.style.display='none'; div.textContent=''; });
+    }
+
+    function showValidationErrors(form, errors) {
+      Object.entries(errors).forEach(([k, v]) => {
+        const input = form.querySelector(`[name="${k}"]`);
+        const errDiv = form.querySelector(`#error-${k}`);
+        if (input) input.classList.add('is-invalid');
+        if (errDiv) { errDiv.textContent = Array.isArray(v) ? v[0] : v; errDiv.style.display = 'block'; }
+      });
+    }
+
+    // Bind all forms with class .ajax-form
+    const forms = document.querySelectorAll('form.ajax-form');
+    if (!forms.length) return;
+
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    forms.forEach(form => {
+      const submitBtn = form.querySelector('.ajax-submit');
+      const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+      const spinner = submitBtn ? submitBtn.querySelector('.spinner-border') : null;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        clearValidation(form);
+
+        // per-form message container: if id exists (formid + 'Message'), use it, else fallback to next sibling
+        const formId = form.id || '';
+        const messageContainer = document.getElementById(formId + 'Message') || form.nextElementSibling;
+
+        // collect form data
+        const fm = new FormData(form);
+        const payload = Object.fromEntries(fm.entries());
+
+        // ui lock
+        if (submitBtn) { submitBtn.disabled = true; }
+        if (spinner) spinner.style.display = 'inline-block';
+        if (btnText) btnText.setAttribute('aria-hidden', 'true');
+        if (messageContainer) messageContainer.innerHTML = '';
+
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'X-Requested-With': 'XMLHttpRequest',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          let payloadJson = {};
+          try { payloadJson = await res.json(); } catch (err) { payloadJson = {}; }
+
+          if (res.status === 422 && payloadJson.errors) {
+            showValidationErrors(form, payloadJson.errors);
+            showMessage(messageContainer, 'Please fix the validation errors.', 'warning');
+          } else {
+            const apiStatus = (payloadJson.status || '').toLowerCase();
+
+            if (apiStatus === 'ok') {
+              showMessage(messageContainer, payloadJson.message || 'Operation succeeded', 'success');
+              form.reset();
+            } else {
+              // show server-provided message or error
+              const errMsg = payloadJson.message || payloadJson.error || `Server error (${res.status})`;
+              showMessage(messageContainer, errMsg, 'danger');
+            }
+          }
+        } catch (err) {
+          console.error('Ajax form error', err);
+          showMessage(messageContainer, 'Network error — please try again.', 'danger');
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+          if (spinner) spinner.style.display = 'none';
+          if (btnText) btnText.removeAttribute('aria-hidden');
+        }
+      });
+    });
+  });
+})();
+</script>

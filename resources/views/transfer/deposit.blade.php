@@ -12,7 +12,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Deposit Report 
                     @if($is_admin != 1)    
-                <button type="button" style="float:right" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
+                <button type="button" style="float:right" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#depositModel">
 
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
                         Deposit Amount
@@ -22,15 +22,21 @@
     </div>
 
     <div class="card-body">
+       
         <!-- Responsive table container -->
         <div class="table-responsive">
             <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            <table class="table bordered-table mb-0 align-middle text-nowrap">
                 <thead>
                     <tr>
                         <th>User</th>
                         <th>Amount</th>
                         <th>Transaction Id</th>
                         <th>Status</th>
+                        <th>Attachment</th>
                         <th>Approved Date</th>
                         <th>Created Date</th>
                            @if($is_admin == 1)
@@ -52,12 +58,20 @@
                                 <span class="bg-danger-focus text-danger-main px-16 py-4 radius-4 fw-medium text-sm">Pending</span>
                             @endif
                         </td>
+                        <td>
+                             <img
+                                                src="{{ $tx['attachment'] ? $apiBase.'/uploads/'. $tx['attachment'] : asset('assets/images/no-image.jpg') }}"
+                                                alt="Profile Image"
+                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                            />
+                        </td>
                         <td>{{ isset($tx['approved_at']) ? \Carbon\Carbon::parse($tx['approved_at'])->format('d/m/Y') : '-' }}</td>
                         <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : '-' }}</td>
-                         @if($is_admin == 1)
+                         @if($is_admin == 1 && $tx['status'] != '1')
                         <td>
-                            <span class="bg-success-focus text-success-main px-16 py-4 radius-4 fw-medium text-sm">Approve</span>
-                        </td>
+                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                                <iconify-icon icon="lucide:check" class="menu-icon"></iconify-icon>
+                                            </button>                        </td>
 
                         @endif
                     </tr>
@@ -75,7 +89,7 @@
     </div>
 </div>
  <!-- Modal Edit Currecny -->
-    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalEditLabel" aria-hidden="true">
+    <div class="modal fade" id="depositModel" tabindex="-1" aria-labelledby="exampleModalEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog modal-dialog-centered">
             <div class="modal-content radius-16 bg-base">
                   <div class="modal-header">
@@ -84,8 +98,17 @@
             </div>
             <div class="modal-body px-32 py-56">
                     
+                                    @if($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                        @foreach($errors->all() as $err)
+                                            <li>{{ $err }}</li>
+                                        @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
             
-             <form action="{{ route('mint.store') }}" method="POST" class="d-flex flex-column gap-3">
+             <form action="{{ route('saveDeposit') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-column gap-3">
                     @csrf
 
                     {{-- Address --}}

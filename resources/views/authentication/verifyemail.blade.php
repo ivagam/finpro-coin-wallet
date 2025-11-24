@@ -9,37 +9,25 @@
     <section class="auth forgot-password-page bg-base d-flex flex-wrap">
         <div class="auth-left d-lg-block d-none">
             <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-                <img src="{{ asset('assets/images/fin-forgot.png') }}" alt="">
+                <img src="{{ asset('assets/images/fin-verify.png') }}" alt="">
             </div>
         </div>
         <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
             
             <div class="max-w-464-px mx-auto w-100">
                 <div>
-                    <h4 class="mb-12">Forgot Password</h4>
-                    <p class="mb-32 text-secondary-light text-lg">Enter the email address associated with your account and we will send your password.</p>
+                    <h4 class="mb-12">Email Verification</h4>
+                    @if ($success == '')
+                        <div class="text-danger mt-3">{{$error}}</div>
+                        <p><a  href="{{ route('signin') }}" class="text-primary-600 fw-semibold">Click here to login</a></a>
+                    @else
+                        <div class="text-success mt-3">Your account has been verified.</div>
+                        <p><a  href="{{ route('signin') }}" class="text-primary-600 fw-semibold">Click here to login</a></a>
+                    @endif
                 </div>
             
-            <x-alert />
-
-            <form id="signin-form" action="{{ url('/sendPassword') }}" method="POST">
-                @csrf
-                    <div class="icon-field">
-                        <span class="icon top-50 translate-middle-y">
-                            <iconify-icon icon="mage:email"></iconify-icon>
-                        </span>
-                        <input type="email" name="email" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Enter Email">
-                    </div>
-                    <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32" >Submit</button>
-
-                    <div class="text-center">
-                    <a  href="{{ route('signin') }}" class="text-primary-600 fw-bold mt-24">Back to Sign In</a>
-                    </div>
-
-                    <div class="mt-120 text-center text-sm">
-                        <p class="mb-0">Already have an account? <a  href="{{ route('signin') }}" class="text-primary-600 fw-semibold">Sign In</a></p>
-                    </div>
-                </form>
+          
+            
             </div>
         </div>
     </section>

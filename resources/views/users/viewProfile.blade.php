@@ -53,6 +53,7 @@
                                             />
                                 <h6 class="mb-0 mt-16">{{$user['fullname']}}</h6>
                                 <span class="text-secondary-light mb-16">{{$user['email']}}</span>
+                                
                             </div>
                             <div class="mt-24">
                                 <h6 class="text-xl mb-16">Personal Info</h6>
@@ -156,8 +157,13 @@
                     </div>
                 </div>
                 <div class="col-lg-8">
+                     <div style="margin-bottom:15px" class="p-16 bg-neutral-50 radius-8 border-start-width-3-px border-neutral-600 border-top-0 border-end-0 border-bottom-0">
+                                        <h6 class="text-primary-light text-md mb-8">Token Address</h6>
+                                        <span class="text-primary-light mb-0">{{ session('user.address') }}</span>
+                                    </div>
+
                     <div class="card h-100">
-                        
+                           
                     <x-alert />
                     
                         <div class="card-body p-24">
@@ -290,7 +296,7 @@
                                             
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
-                                           <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                           <a href="{{ route('dashboard.index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                                 Cancel
                                             </button> </a>
                                             <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
@@ -326,7 +332,7 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
-                                            <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                            <a href="{{ route('dashboard.index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                                     Cancel
                                                 </button> </a>
                                                 <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
@@ -398,7 +404,7 @@
                                             
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
-                                           <a href="{{ route('index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                           <a href="{{ route('dashboard.index') }}">  <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                                 Cancel
                                             </button> </a>
                                             <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
@@ -413,3 +419,25 @@
             </div>
 
 @endsection
+
+<script>
+function previewImage(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+
+    input.addEventListener('change', function () {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.style.backgroundImage = `url(${e.target.result})`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+previewImage("aadharFrontUpload", "aadharFrontPreview");
+previewImage("aadharBackUpload", "aadharBackPreview");
+previewImage("panCardUpload", "panCardPreview");
+</script>

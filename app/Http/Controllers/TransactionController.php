@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Client\RequestException;
+
+
 
 class TransactionController extends Controller
 {
@@ -31,11 +37,6 @@ class TransactionController extends Controller
 
         $token = session('token');
         $user  = session('user');
-
-        if (!$token || !$user) {
-            return redirect('/login')->with('error', 'Session expired, please login again.');
-        }
-
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 
         try {
@@ -59,6 +60,136 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
     }
+
+    public function ajaxSend(Request $request)
+    {
+        $request->validate([
+            'address' => 'required|string',
+            'amount' => 'required|numeric|min:0.00000001',
+        ]);
+
+        $token = session('token');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        try {
+            $response = Http::withToken($token)->post("{$apiBase}/api/user-transfer", [
+                'address' => $request->address,
+                'amount'  => $request->amount,
+            ]);
+
+            if ($response->failed()) {
+                $body = $response->body();
+                Log::error('Transfer API failed', ['body' => $body, 'status' => $response->status()]);
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $body,
+                        'error' => $body
+                    ], max(400, $response->status()));
+                }
+                return redirect()->back()->with('error', 'Transfer request failed: ' . $body);
+            }
+
+            $data = $response->json();
+
+            if (($data['status'] ?? '') === 'ok') {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['status' => 'ok', 'message' => 'Transfer successful!']);
+                }
+                return redirect()->back()->with('success', 'Transfer successful!');
+            }
+
+            // Non-ok payload
+            $errMsg = $data['error'] ?? $data['message'] ?? 'Unknown error';
+            Log::warning('Transfer API returned non-ok payload', ['payload' => $data]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $errMsg], 400);
+            }
+            return redirect()->back()->with('error', $errMsg);
+
+        } catch (RequestException $e) {
+            Log::error('HTTP request exception on transfer', [
+                'message' => $e->getMessage(),
+                'response' => $e->response ? $e->response->body() : null,
+            ]);
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'External API request failed', 'error' => $e->getMessage()], 502);
+            }
+            return redirect()->back()->with('error', 'External API request failed: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Exception in storeTransfer', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Server error', 'error' => $e->getMessage()], 500);
+            }
+            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+        }
+    }
+
+    public function ajaxWithdrawal(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.00000001',
+        ]);
+
+        $token = session('token');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        try {
+            $response = Http::withToken($token)->post("{$apiBase}/api/save-withdrawal", [
+                'amount'  => $request->amount,
+            ]);
+
+            if ($response->failed()) {
+                $body = $response->body();
+                Log::error('Transfer API failed', ['body' => $body, 'status' => $response->status()]);
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $body,
+                        'error' => $body
+                    ], max(400, $response->status()));
+                }
+                return redirect()->back()->with('error', 'Transfer request failed: ' . $body);
+            }
+
+            $data = $response->json();
+
+            if (($data['status'] ?? '') === 'ok') {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['status' => 'ok', 'message' => 'Withdrawal successful!']);
+                }
+                return redirect()->back()->with('success', 'Withdrawal successful!');
+            }
+
+            // Non-ok payload
+            $errMsg = $data['error'] ?? $data['message'] ?? 'Unknown error';
+            Log::warning('Transfer API returned non-ok payload', ['payload' => $data]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $errMsg], 400);
+            }
+            return redirect()->back()->with('error', $errMsg);
+
+        } catch (RequestException $e) {
+            Log::error('HTTP request exception on transfer', [
+                'message' => $e->getMessage(),
+                'response' => $e->response ? $e->response->body() : null,
+            ]);
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'External API request failed', 'error' => $e->getMessage()], 502);
+            }
+            return redirect()->back()->with('error', 'External API request failed: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Exception in storeTransfer', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Server error', 'error' => $e->getMessage()], 500);
+            }
+            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+        }
+    }
+
+
     
     public function transferHistory(Request $request)
     {
@@ -125,14 +256,14 @@ class TransactionController extends Controller
             $transactions = $data['data'] ?? [];
             
             return view('transfer.deposit', [
-                'transactions' => $transactions,'is_admin'=>$user['is_admin']
+                'transactions' => $transactions,'is_admin'=>$user['is_admin'],'apiBase'=>$apiBase
             ]);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
     }
-     // Accept form submit and forward to Node API
+    // Accept form submit and forward to Node API
     public function saveDeposit(Request $request)
     {
         $token = session('token');
@@ -141,13 +272,13 @@ class TransactionController extends Controller
         // minimal validation for required non-file fields
         try{
             $request->validate([
-                'amount' => 'required|string|max:255',
+                'amount' => 'required|numeric',
             ]);
          } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                     ->withErrors($e->validator)
                     ->withInput() // ensures old() is available
-                    ->with('active_tab', 'pills-change-passwork');
+                    ->with('error', 'pills-change-passwork');
         }
 
         // Build multipart array
@@ -192,25 +323,29 @@ class TransactionController extends Controller
                 $body = (string)$resp->getBody();
                 $headers = $resp->getHeaders();
                 Log::error("Node API update-profile error (exception). Status: {$status}", ['headers'=>$headers, 'body'=>$body]);
-                return redirect()->back()->withErrors("Node API error: HTTP {$status} — " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
+                return redirect()->back()->withErrors("Node API error: HTTP {$status} — " . substr($body,0,1000));
             } else {
                 Log::error('Node API update-profile request failed (no response)', ['error' => $e->getMessage()]);
-                return redirect()->back()->withErrors('Node API request failed: ' . $e->getMessage())->with('active_tab','pills-edit-profile-tab');
+                return redirect()->back()->withErrors('Node API request failed: ' . $e->getMessage());
             }
         }
 
         // success path
+        $transactions = $data['data'] ?? [];
+           
         $status = $response->getStatusCode();
         $body = (string)$response->getBody();
+        $data = json_decode($body, true);
+
         $headers = $response->getHeaders();
         Log::info("Node update-profile response", ['status'=>$status, 'headers'=>$headers, 'body'=>substr($body,0,2000)]);
 
-        if ($status >= 200 && $status < 300) {
-            return redirect()->back()->with('success', 'Deposit request saved successfully.')->with('active_tab','pills-edit-profile-tab');
+        if ($status >= 200 && $data['status'] == 'ok') {
+            return redirect()->back()->with('success', 'Deposit saved successfully.');
+        }else{
+            return redirect()->back()->with('error', $data['message']);
         }
 
-        // If we reach here, return useful error
-        return redirect()->back()->withErrors("Node API returned HTTP {$status}: " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
     }
     
     public function approveWithdraw(Request $request)

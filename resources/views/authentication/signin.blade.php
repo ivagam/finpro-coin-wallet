@@ -8,16 +8,14 @@
 <section class="auth bg-base d-flex flex-wrap">
     <div class="auth-left d-lg-block d-none">
         <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="{{ asset('assets/images/auth-img.png') }}" alt="">
+            <img src="{{ asset('assets/images/fin-login.png') }}" alt="">
         </div>
     </div>
 
     <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
         <div class="max-w-464-px mx-auto w-100">
             <div>
-                <a href="{{ route('index') }}" class="mb-40 max-w-290-px">
                     <img src="{{ asset('assets/images/finxcore-logo.png') }}" alt="">
-                </a>
                 <h4 class="mb-12">Sign In to your Account</h4>
                 <p class="mb-32 text-secondary-light text-lg">Welcome back! Please enter your details</p>
             </div>
@@ -25,7 +23,7 @@
                 <div class="text-danger text-center mt-3">{{ session('error') }}</div>
             @endif
             <!-- ✅ FIXED: added IDs for JS -->
-            <form id="signin-form" action="{{ url('/signin') }}" method="POST">
+            <form id="signin-form" action="{{ url('/login') }}" method="POST">
                 @csrf
                 <div class="icon-field mb-16">
                     <span class="icon top-50 translate-middle-y">
@@ -63,8 +61,8 @@
             <!-- ✅ Added message element -->
             <div id="login-message" class="mt-3 text-center text-danger fw-medium"></div>
         </div>
-        <p class="mt-3 text-center" style="cursor: pointer; color: rgb(158, 2, 16);">Don’t have an account? <a href="{{ route('signup') }}">Register</a></p>
-        <p class="text-center" style="cursor: pointer; color: rgb(158, 2, 16);"><a href="{{ route('forgotPassword') }}">Forgot Password?</a></p>
+        <p class="mt-3 text-center">Don’t have an account? <a href="{{ route('signup') }}">Register</a></p>
+        <p class="text-center" ><a href="{{ route('forgotPassword') }}">Forgot Password?</a></p>
     </div>
 </section>
 

@@ -3,7 +3,6 @@
     <!-- Bootstrap js -->
     <script src="{{ asset('assets/js/lib/bootstrap.bundle.min.js') }}"></script>
     <!-- Apex Chart js -->
-    <script src="{{ asset('assets/js/lib/apexcharts.min.js') }}"></script>
     <!-- Data Table js -->
     <script src="{{ asset('assets/js/lib/dataTables.min.js') }}"></script>
     <!-- Iconify Font js -->

@@ -9,13 +9,13 @@
     <section class="auth bg-base d-flex flex-wrap">
         <div class="auth-left d-lg-block d-none">
             <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-                <img src="{{ asset('assets/images/auth-img.png') }}" alt="">
+                <img src="{{ asset('assets/images/fin-create.png') }}" alt="">
             </div>
         </div>
         <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
             <div class="max-w-464-px mx-auto w-100">
                 <div>
-                    <a href="{{ route('index') }}" class="mb-40 max-w-290-px">
+                    <a href="{{ route('login') }}" class="mb-40 max-w-290-px">
                         <img src="{{ asset('assets/images/finxcore-logo.png') }}" alt="">
                     </a>
                     <h4 class="mb-12">Sign Up to your Account</h4>

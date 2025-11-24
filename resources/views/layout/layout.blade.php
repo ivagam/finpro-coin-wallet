@@ -35,27 +35,7 @@
     <!-- ..::  scripts  end ::.. -->
 
 
-<script>
-function previewImage(inputId, previewId) {
-    const input = document.getElementById(inputId);
-    const preview = document.getElementById(previewId);
 
-    input.addEventListener('change', function () {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.style.backgroundImage = `url(${e.target.result})`;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-previewImage("aadharFrontUpload", "aadharFrontPreview");
-previewImage("aadharBackUpload", "aadharBackPreview");
-previewImage("panCardUpload", "panCardPreview");
-</script>
 <style>
 #aadharFrontPreview {
     background-image: url(../assets/images/no-image.jpg);
@@ -77,31 +57,14 @@ previewImage("panCardUpload", "panCardPreview");
 }
 </style>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    var activeTab = "{{ session('active_tab') }}";
-    if (activeTab) {
-        var tabBtn = document.querySelector('#pills-tab button[data-bs-target="#' + activeTab + '"]');
-        if (tabBtn) {
-            var tab = new bootstrap.Tab(tabBtn);
-            tab.show();
-        }
-    }
-});
+
+ @if(session('error'))
+    var myModal = new bootstrap.Modal(document.getElementById('depositModel'));
+    myModal.show();
+@endif
 </script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const alerts = document.querySelectorAll('.alert-auto-close');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            alert.style.transition = "opacity 0.5s ease";
-            alert.style.opacity = "0";
-            setTimeout(() => alert.remove(), 500);
-        }, 3000); // show for 3 seconds
-    });
-});
-</script>
+
 
 </body>
 
