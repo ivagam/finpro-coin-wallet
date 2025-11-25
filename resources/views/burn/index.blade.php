@@ -13,9 +13,13 @@
                 <h6 class="text-xl mb-0">Burn Token</h6>
             </div>
             <div class="card-body p-24">
-
                 {{-- Flash messages --}}
-                <x-alert />
+                @if(request('success'))
+                    <div class="alert alert-success">{{ request('success') }}</div>
+                @endif
+                @if(request('error'))
+                    <div class="alert alert-danger">{{ request('error') }}</div>
+                @endif
 
                 <form action="{{ route('burn.store') }}" method="POST" class="d-flex flex-column gap-3">
                     @csrf

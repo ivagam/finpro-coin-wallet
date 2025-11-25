@@ -36,18 +36,19 @@ class MintController extends Controller
             ]);
 
             if ($response->failed()) {
-                return redirect()->back()->with('error', 'Mint request failed: ' . $response->body());
+                return redirect()->route('mint', ['error'=>'Mint request failed: ' . $response->body()]);
+
             }
 
             $data = $response->json();
 
             if (($data['status'] ?? '') === 'ok') {
-                return redirect()->back()->with('success', 'Mint successful!');
+                return redirect()->route('mint', ['success'=>'Mint successful!']);
             } else {
-                return redirect()->back()->with('error', $data['error'] ?? 'Unknown error');
+                return redirect()->route('mint', ['error'=>$data['error'] ?? 'Unknown error']);
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+            return redirect()->route('mint', ['error'=>'Server error: ' . $e->getMessage()]);
         }
     }
 

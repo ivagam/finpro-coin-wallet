@@ -227,7 +227,7 @@
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="number" id="t_amount" name="amount" class="form-control bg-base border-0 radius-8"
+                                            <input type="number" id="t_amount" step="any" name="amount" class="form-control bg-base border-0 radius-8"
                                                 placeholder="Trade Value" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
@@ -266,7 +266,7 @@
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="number" name="amount" id="amount" class="form-control border-0 radius-8"
+                                            <input type="number" name="amount" step="any" id="amount" class="form-control border-0 radius-8"
                                                 placeholder="Estimated Value" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
@@ -343,7 +343,7 @@
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="number" id="t_amount" name="amount" class="form-control bg-base border-0 radius-8"
+                                            <input type="number" step="any" id="t_amount" name="amount" class="form-control bg-base border-0 radius-8"
                                                 placeholder="Trade Value" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">

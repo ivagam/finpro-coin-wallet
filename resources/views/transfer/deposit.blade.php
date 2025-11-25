@@ -123,7 +123,7 @@
 
             <div class="col-12">
                 <label class="form-label fw-bold">Amount Deposited:</label>
-                <input type="number" name="amount" class="form-control" required>
+                <input type="number" step="any" name="amount" class="form-control" required>
             </div>
 
             <div class="col-12">

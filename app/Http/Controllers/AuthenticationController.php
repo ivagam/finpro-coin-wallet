@@ -22,7 +22,7 @@ class AuthenticationController extends Controller
 
     public function signUp()
     {
-        return view('authentication.signUp');
+        return view('authentication.signup');
     }
 
     public function login(Request $request)

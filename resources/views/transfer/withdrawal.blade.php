@@ -102,7 +102,7 @@
 
           <div class="col-12 mb-3">
             <label for="t_amount" class="form-label fw-bold">Amount:</label>
-            <input type="number" name="amount" id="t_amount" class="form-control" placeholder="Enter Request Amount" required>
+            <input type="number" name="amount" step="any" id="t_amount" class="form-control" placeholder="Enter Request Amount" required>
             <div class="invalid-feedback" id="error-amount" style="display:none"></div>
           </div>
 

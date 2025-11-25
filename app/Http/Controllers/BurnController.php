@@ -33,18 +33,19 @@ class BurnController extends Controller
             ]);
 
             if ($response->failed()) {
-                return redirect()->back()->with('error', 'Burn request failed: ' . $response->body());
+                return redirect()->route('burn', ['error'=>'Burn request failed: ' . $response->body()]);
+
             }
 
             $data = $response->json();
 
             if (($data['status'] ?? '') === 'ok') {
-                return redirect()->back()->with('success', 'Burn successful!');
+                return redirect()->route('burn', ['success'=>'Burn successful!']);
             } else {
-                return redirect()->back()->with('error', $data['error'] ?? 'Unknown error');
+                return redirect()->route('burn', ['error'=>$data['error'] ?? 'Unknown error']);
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+            return redirect()->route('burn', ['error'=>'Server error: ' . $e->getMessage()]);
         }
     }
 

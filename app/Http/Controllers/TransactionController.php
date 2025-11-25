@@ -46,18 +46,20 @@ class TransactionController extends Controller
             ]);
 
             if ($response->failed()) {
-                return redirect()->back()->with('error', 'Transfer request failed: ' . $response->body());
+                return redirect()->route('transfer', ['error'=>'Transfer request failed: ' . $response->body()]);
             }
 
             $data = $response->json();
 
             if (($data['status'] ?? '') === 'ok') {
-                return redirect()->back()->with('success', 'Transfer successful!');
+                return redirect()->route('transfer', ['success'=>'Transfer successful!']);
             } else {
-                return redirect()->back()->with('error', $data['error'] ?? 'Unknown error');
+                return redirect()->route('transfer', ['error'=>$data['message'] ?? 'Invalid credentials.']);
+
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+            return redirect()->route('transfer', ['error'=>'Server error: ' . $e->getMessage()]);
+
         }
     }
 

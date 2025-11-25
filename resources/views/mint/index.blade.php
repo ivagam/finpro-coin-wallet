@@ -15,8 +15,13 @@
             <div class="card-body p-24">
 
                 {{-- Flash messages --}}
+                @if(request('success'))
+                    <div class="alert alert-success">{{ request('success') }}</div>
+                @endif
+                @if(request('error'))
+                    <div class="alert alert-danger">{{ request('error') }}</div>
+                @endif
                 
-                <x-alert />
                 
                 <form action="{{ route('mint.store') }}" method="POST" class="d-flex flex-column gap-3">
                     @csrf
@@ -39,6 +44,7 @@
                         <input type="number" name="amount" id="amount"
                                class="form-control @error('amount') is-invalid @enderror"
                                placeholder="Enter Token Value"
+                               step="any"
                                value="{{ old('amount') }}">
                         @error('amount')
                             <span class="text-danger">{{ $message }}</span>

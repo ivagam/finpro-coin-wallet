@@ -14,11 +14,11 @@
             </div>
             <div class="card-body p-24">
                 {{-- Flash messages --}}
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                @if(request('success'))
+                    <div class="alert alert-success">{{ request('success') }}</div>
                 @endif
-                @if(session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @if(request('error'))
+                    <div class="alert alert-danger">{{ request('error') }}</div>
                 @endif
 
                 <form action="{{ route('transfer.store') }}" method="POST" class="d-flex flex-column gap-3">
@@ -42,6 +42,7 @@
                         <input type="number" name="amount" id="amount"
                                class="form-control @error('amount') is-invalid @enderror"
                                placeholder="Enter Amount"
+                               step="any"
                                value="{{ old('amount') }}">
                         @error('amount')
                             <span class="text-danger">{{ $message }}</span>
