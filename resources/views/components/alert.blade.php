@@ -1,9 +1,8 @@
-@if(session('success'))
-    <div class="alert alert-success alert-auto-close">{{ session('success') }}</div>
+@if(request('success'))
+    <div class="alert alert-success">{{ request('success') }}</div>
 @endif
-
-@if(session('error'))
-    <div class="alert alert-danger alert-auto-close">{{ session('error') }}</div>
+@if(request('error'))
+    <div class="alert alert-danger">{{ request('error') }}</div>
 @endif
 
 @if($errors->any())
