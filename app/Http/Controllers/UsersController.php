@@ -32,7 +32,7 @@ class UsersController extends Controller
         $apiBase = rtrim(env('NODE_API_URL'), '/');
         $response = Http::withToken($token)->get("{$apiBase}/api/get-profile");
         $data = $response->json();
-        $data['apiBase'] = $apiBase;
+        $data['apiBase'] = $apiBase;        
         return view('users/viewProfile',$data);
     }
     // Accept form submit and forward to Node API
@@ -261,5 +261,37 @@ class UsersController extends Controller
         return redirect()->back()->withErrors("Node API returned HTTP {$status}: " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
     }
 
+    public function show($id)
+{
+    $token = session('token'); // your auth token
+    $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+    try {
+        // Call the Node API to get user details
+        $response = Http::withToken($token)->get("{$apiBase}/api/user/{$id}");
+
+        if ($response->failed()) {            
+            $error = $response->json()['message'] ?? 'Failed to fetch user data';
+            return redirect()->back()->with('error', $error);
+        }
+
+        $user = $response->json()['data'] ?? null;
+        
+        if (!$user) {
+            return redirect()->back()->with('error', 'User data not found');
+        }
+
+        $data = [
+            'status' => 'ok',
+            'user'   => $user,
+            'apiBase'=> $apiBase
+        ];
+
+        return view('users/viewProfile', $data);
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+    }
+}
 
 }

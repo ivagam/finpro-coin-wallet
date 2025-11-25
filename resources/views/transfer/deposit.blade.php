@@ -81,10 +81,7 @@
                         </td>
                         
                     </tr>
-                @empty
-                    <tr data-idrow="1">
-                        <td colspan="8" class="text-center">Record not found.</td>
-                    </tr>
+                @empty                    
                 @endforelse
                 </tbody>
 

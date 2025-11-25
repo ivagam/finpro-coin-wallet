@@ -40,5 +40,27 @@ class DashboardController extends Controller
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
     }
+
+    public function changeUserStatus(Request $request)
+    {
+        $token = session('token');      
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        $userId = $request->id;
+
+        // Call Node API
+        $response = Http::withToken($token)->post("{$apiBase}/api/change-user-status", [
+            'id' => $userId            
+        ]);
+
+        $res = $response->json();
+
+        if(isset($res['status']) && $res['status'] == 'ok'){
+            return redirect()->back()->with('success', 'User status updated successfully.');
+        } else {
+            $message = $res['message'] ?? 'Failed to update status.';
+            return redirect()->back()->with('error', $message);
+        }
+    }
     
 }

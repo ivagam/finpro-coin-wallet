@@ -31,10 +31,7 @@
                     <td>{{ number_format($tx['amount'], 8) }}</td>
                     <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : 'N/A' }}</td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="text-center">No mint transactions found.</td>
-                </tr>
+                @empty                
                 @endforelse
             </tbody>
         </table>

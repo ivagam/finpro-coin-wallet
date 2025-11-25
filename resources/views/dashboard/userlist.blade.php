@@ -8,6 +8,55 @@
 @endphp
 
 @section('content')
+
+<style>
+/* Overlay: semi-transparent background */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3); /* lighter shadow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Popup content box */
+.popup-content {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 5px; /* small rounded corners */
+    text-align: center;
+    min-width: 250px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-family: Arial, sans-serif;
+}
+
+.btn-confirm {
+    background: #28a745;
+    color: #fff;
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-cancel {
+    background: #dc5b67ff;
+    color: #fff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+</style>
+
 <div class="card basic-data-table">
     <div class="card-header">
         <h5 class="card-title mb-0">User List     
@@ -57,24 +106,18 @@
                         
                         <td class="text-center">
                                 <div class="d-flex align-items-center gap-10 justify-content-center">
-                                    <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                    <a href="{{ route('profile.view', ['id' => $tx['id']]) }}" 
+                                        class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
                                         <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                    </button>
-                                    <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                        <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                    </button>
-                                    <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                        <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                    </a>
+                                    
+                                    <button type="button" class="status-btn bg-warning-focus bg-hover-warning-200 text-warning-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" data-user-id="{{ $tx['id'] }}">
+                                        <iconify-icon icon="mdi:swap-horizontal" class="menu-icon"></iconify-icon>
                                     </button>
                                 </div>
                             </td>
-                        
-
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="text-center">Record not found.</td>
-                    </tr>
+                    @empty                    
                     @endforelse
                 </tbody>
             </table>
@@ -84,4 +127,35 @@
         
     </div>
 </div>
+
+<div id="status-popup" class="popup-overlay" style="display:none;">
+    <div class="popup-content">
+        <p>Are you sure you want to change the status?</p>
+        <form id="status-form" method="POST" action="{{ route('users.changeStatus') }}">
+            @csrf
+            <input type="hidden" name="id" id="popup-user-id">
+            <button type="submit" class="btn-confirm">Yes</button>
+            <button type="button" class="btn-cancel">No</button>
+        </form>
+    </div>
+</div>
 @endsection
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('status-popup');
+    const popupUserId = document.getElementById('popup-user-id');
+    const statusButtons = document.querySelectorAll('.status-btn');
+    const btnCancel = popup.querySelector('.btn-cancel');
+
+    statusButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            popup.style.display = 'flex';
+            popupUserId.value = this.getAttribute('data-user-id');
+        });
+    });
+
+    btnCancel.addEventListener('click', function() {
+        popup.style.display = 'none';
+    });
+});
+</script>

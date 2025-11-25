@@ -421,23 +421,27 @@
 @endsection
 
 <script>
-function previewImage(inputId, previewId) {
-    const input = document.getElementById(inputId);
-    const preview = document.getElementById(previewId);
+document.addEventListener("DOMContentLoaded", function() {
+    function previewImage(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
 
-    input.addEventListener('change', function () {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.style.backgroundImage = `url(${e.target.result})`;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
+        if (!input || !preview) return; // safety check
 
-previewImage("aadharFrontUpload", "aadharFrontPreview");
-previewImage("aadharBackUpload", "aadharBackPreview");
-previewImage("panCardUpload", "panCardPreview");
+        input.addEventListener('change', function () {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.style.backgroundImage = `url(${e.target.result})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    previewImage("aadharFrontUpload", "aadharFrontPreview");
+    previewImage("aadharBackUpload", "aadharBackPreview");
+    previewImage("panCardUpload", "panCardPreview");
+});
 </script>

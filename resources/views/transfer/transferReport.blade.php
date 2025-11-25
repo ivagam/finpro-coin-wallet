@@ -41,10 +41,7 @@
                         <td>{{ ucfirst($tx['txn_type']) }}</td>
                         <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : 'N/A' }}</td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="text-center">No transfer transactions found.</td>
-                    </tr>
+                    @empty                    
                     @endforelse
                 </tbody>
             </table>

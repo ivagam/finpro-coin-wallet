@@ -78,8 +78,7 @@
                         </td>
                         @endif
                     </tr>
-                    @empty
-                    <tr><td colspan="7" class="text-center">Record not found.</td></tr>
+                    @empty                    
                     @endforelse
                 </tbody>
             </table>

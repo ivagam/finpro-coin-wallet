@@ -49,6 +49,7 @@ Route::middleware([SessionAuth::class])->group(function () {
             Route::get('/', 'index')->name('dashboard.index');
             Route::get('/userList', 'userList')->name('dashboard.userList');
             Route::post('/withdraw', 'withdraw')->name('dashboard.withdraw');
+            Route::post('/change-status', 'changeUserStatus')->name('users.changeStatus');
         });
     });
 
@@ -91,6 +92,8 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::post('/profile/update', [UsersController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/changePassword', [UsersController::class, 'changePassword'])->name('profile.changePassword');
     Route::post('/profile/updateBankAccount', [UsersController::class, 'updateBankAccount'])->name('profile.updateBankAccount');
+    Route::get('/profile/view/{id}', [UsersController::class, 'show'])->name('profile.view');
+
 
     // Users pages
     Route::prefix('users')->group(function () {
