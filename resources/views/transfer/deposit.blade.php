@@ -38,9 +38,7 @@
                         <th>Attachment</th>
                         <th>Approved Date</th>
                         <th>Created Date</th>
-                        @if($is_admin == 1)
-                            <th>Action</th>
-                        @endif
+                        <th>Action</th>
                     </tr>
                 </thead>
 
@@ -69,8 +67,8 @@
                         </td>
                         <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d-M-Y') : '-' }}</td>
 
-                        @if($is_admin == 1 && $tx['status'] != 1)
                         <td class="action-col">
+                            @if($is_admin == 1 && $tx['status'] != 1)
                             <button type="button"
                                     class="approveDepositBtn bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-40-px h-40-px 
                                            d-flex justify-content-center align-items-center rounded-circle"
@@ -79,11 +77,12 @@
                                     data-id="{{ $tx['deposit_id'] }}">
                                 <iconify-icon icon="mdi:check" class="menu-icon"></iconify-icon>
                             </button>
+                            @endif
                         </td>
-                        @endif
+                        
                     </tr>
                 @empty
-                    <tr>
+                    <tr data-idrow="1">
                         <td colspan="8" class="text-center">Record not found.</td>
                     </tr>
                 @endforelse
@@ -95,6 +94,7 @@
     </div>
 </div>
 
+ @if($is_admin != 1)
 
 {{-- Deposit Form Modal --}}
 <div class="modal fade" id="depositModel" tabindex="-1">
@@ -118,7 +118,7 @@
         </div>
         @endif
 
-        <form action="{{ route('deposit.approve') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+             <form action="{{ route('saveDeposit') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-column gap-3">
             @csrf
 
             <div class="col-12">
@@ -142,7 +142,7 @@
     </div>
   </div>
 </div>
-
+@else
 
 {{-- APPROVE DEPOSIT MODAL --}}
 <div class="modal fade" id="depositApproveModal" tabindex="-1" aria-hidden="true">
@@ -179,6 +179,7 @@
     </div>
   </div>
 </div>
+@endif
 
 @endsection
 
@@ -190,7 +191,6 @@
 document.addEventListener("click", function(e) {
     const btn = e.target.closest(".approveDepositBtn");
     if (!btn) return;
-
     document.getElementById("approveDepositId").value = btn.dataset.id;
 });
 

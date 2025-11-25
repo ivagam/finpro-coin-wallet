@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+
+        // ✔ Handles queued cookies
         $middleware->append(\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
+
+        // ✔ Starts the session BEFORE any route middleware runs
         $middleware->append(\Illuminate\Session\Middleware\StartSession::class);
 
     })

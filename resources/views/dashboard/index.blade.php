@@ -374,14 +374,14 @@
                             {{-- ================= WITHDRAW / BURN FORM ================= --}}
                             <div class="tab-pane fade" id="pills-Withdraw" role="tabpanel" aria-labelledby="pills-Withdraw-tab">
 
-                                <form method="POST" action="{{ route('dashboard.withdraw') }}">
+                                <form id="transferForm1" class="ajax-form1" method="POST" action="{{ route('ajaxWithdrawal') }}">
                                     @csrf
                                     <input type="hidden" name="type" value="burn">
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Value</label>
                                         <div class="input-group input-group-lg border input-form-light radius-8">
-                                            <input type="text" name="amount" class="form-control bg-base border-0 radius-8"
+                                            <input type="text" name="amount" id="t_amount1" class="form-control bg-base border-0 radius-8"
                                                 placeholder="Enter Amount" required>
 
                                             <div class="input-group-text bg-neutral-50 border-0 fw-normal text-md">
@@ -391,13 +391,14 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <button class="btn btn-primary text-sm btn-sm px-8 py-12 w-100 radius-8">
-                                        Submit
-                                    </button>
-
+            <button type="submit" class="btn btn-primary ajax-submit1">
+              <span class="btn-text">Submit</span>
+              <span class="spinner-border spinner-border-sm ms-2" role="status" style="display:none"></span>
+            </button>
                                     <x-alert />
                                 </form>
+                                        <div id="transferMessage1" class="mt-2"></div>
+
                             </div>
                         </div>
                     </div>
@@ -615,6 +616,103 @@
           if (btnText) btnText.removeAttribute('aria-hidden');
         }
       });
+    });
+  });
+})();
+
+(function () {
+  document.addEventListener('DOMContentLoaded', () => {
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    function showMessage(container, html, type = 'info') {
+      if (!container) { console.log('Message:', html); return; }
+      const clsMap = { success: 'alert alert-success', danger: 'alert alert-danger', warning: 'alert alert-warning', info: 'alert alert-info' };
+      container.innerHTML = `<div class="${clsMap[type] || clsMap.info}">${html}</div>`;
+    }
+
+    function clearValidation(form) {
+      form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      form.querySelectorAll('.invalid-feedback').forEach(div => { div.style.display = 'none'; div.textContent = ''; });
+    }
+
+    function showValidationErrors(form, errors) {
+      Object.entries(errors).forEach(([k, v]) => {
+        const input = form.querySelector(`[name="${k}"]`);
+        const errDiv = form.querySelector(`#error-${k}`);
+        if (input) input.classList.add('is-invalid');
+        if (errDiv) { errDiv.textContent = Array.isArray(v) ? v[0] : v; errDiv.style.display = 'block'; }
+      });
+    }
+
+    // Use delegated submit handling so forms inside modals are handled even if injected later
+    document.addEventListener('submit', async function (event) {
+      const form = event.target;
+      if (!form || !form.classList.contains('ajax-form1')) return; // only handle forms with .ajax-form
+
+      event.preventDefault();
+      clearValidation(form);
+
+      // UI elements within this form (defaults if missing)
+      const submitBtn = form.querySelector('.ajax-submit1');
+      const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+      const spinner = submitBtn ? submitBtn.querySelector('.spinner-border') : null;
+
+      // Per-form message container: prefer #<formId>Message, else next sibling
+      const msgContainer = (form.id && document.getElementById(form.id + 'Message1')) || form.nextElementSibling;
+
+      if (msgContainer) msgContainer.innerHTML = '';
+
+      // Collect payload
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // Lock UI
+      if (submitBtn) submitBtn.disabled = true;
+      if (spinner) spinner.style.display = 'inline-block';
+      if (btnText) btnText.setAttribute('aria-hidden', 'true');
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+        });
+
+        let json = {};
+        try { json = await res.json(); } catch (e) { json = {}; }
+
+        // Laravel validation (422)
+        if (res.status === 422 && json.errors) {
+          showValidationErrors(form, json.errors);
+          showMessage(msgContainer, 'Please fix the form errors.', 'warning');
+          return;
+        }
+
+        // Prefer server-indicated status field if present
+        const apiStatus = (json.status || '').toLowerCase();
+
+        if (apiStatus === 'ok') {
+          showMessage(msgContainer, json.message || 'Operation successful.', 'success');
+          form.reset();
+        } else {
+          // show server side message or fallback to message/error fields
+          const errMsg = json.message || json.error || `Server error (${res.status})`;
+          showMessage(msgContainer, errMsg, 'danger');
+        }
+
+      } catch (err) {
+        console.error('Ajax form error:', err);
+        showMessage(msgContainer, 'Network error — please try again.', 'danger');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (spinner) spinner.style.display = 'none';
+        if (btnText) btnText.removeAttribute('aria-hidden');
+      }
     });
   });
 })();

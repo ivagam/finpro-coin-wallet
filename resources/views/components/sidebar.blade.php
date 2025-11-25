@@ -1,3 +1,5 @@
+@php $admin = data_get(session('user'), 'is_admin'); @endphp
+
 <aside class="sidebar">
     <button type="button" class="sidebar-close-btn">
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
@@ -37,6 +39,7 @@
                     </li>           
                 </ul>
             </li>
+            @if($admin == 1)
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
@@ -78,6 +81,7 @@
                 </ul>
                 
             </li>
+            @endif
            
            
         </ul>

@@ -4,6 +4,7 @@
 <x-head/>
 
 <body>
+@include('partials.flash')
 
 <section class="auth bg-base d-flex flex-wrap">
     <div class="auth-left d-lg-block d-none">
@@ -19,8 +20,8 @@
                 <h4 class="mb-12">Sign In to your Account</h4>
                 <p class="mb-32 text-secondary-light text-lg">Welcome back! Please enter your details</p>
             </div>
-            @if (session('error'))
-                <div class="text-danger text-center mt-3">{{ session('error') }}</div>
+            @if (request('error'))
+                <div class="text-danger text-center mt-3">{{ request('error') }}</div>
             @endif
             <!-- ✅ FIXED: added IDs for JS -->
             <form id="signin-form" action="{{ url('/login') }}" method="POST">

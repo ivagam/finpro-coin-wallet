@@ -43,7 +43,7 @@ class AuthenticationController extends Controller
 
             return redirect('/dashboard');
         } else {
-            return back()->with('error', $data['message'] ?? 'Invalid credentials.');
+            return redirect()->route('login', ['error'=>$data['message'] ?? 'Invalid credentials.']);
         }
     }
     public function register(Request $request)
