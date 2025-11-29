@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Client\RequestException;
 
 
-
 class TransactionController extends Controller
 {
     public function transfer()
@@ -190,7 +189,6 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
     }
-
 
     
     public function transferHistory(Request $request)
@@ -374,6 +372,77 @@ class TransactionController extends Controller
             ]);
 
         return $response->json();
+    }
+
+    public function approvedStatus(Request $request){
+        $token = session('token');
+        $user = session('user');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        try {
+            $response = Http::withToken($token)->get("{$apiBase}/api/reports/withdrawal");
+            $data = $response->json();
+            $transactions = $data['data'] ?? [];
+
+            // Filter only approved (status = 1)
+            $transactions = array_filter($transactions, fn($tx) => $tx['status'] == 1);
+
+            return view('transfer.withdrawal', [
+                'transactions' => $transactions,
+                'is_admin' => $user['is_admin']
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+        }
+    }
+
+    public function pendingStatus(Request $request){
+        $token = session('token');
+        $user = session('user');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        try {
+            $response = Http::withToken($token)->get("{$apiBase}/api/reports/withdrawal");
+            $data = $response->json();
+            $transactions = $data['data'] ?? [];
+
+            // Filter only pending (status = 0)
+            $transactions = array_filter($transactions, fn($tx) => $tx['status'] == 0);
+
+            return view('transfer.withdrawal', [
+                'transactions' => $transactions,
+                'is_admin' => $user['is_admin']
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
+        }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        if (!session('token')) {
+            return redirect('/login')->with('error', 'Session expired, please login.');
+        }
+
+        $token = session('token');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
+
+        $response = Http::withToken($token)->get("{$apiBase}/api/export-excel", [
+            'from' => $request->from,
+            'to' => $request->to
+        ]);
+
+        $data = $response->json();
+
+        if (!($data['success'] ?? false)) {
+            return response()->json(['error' => $data['error'] ?? 'Failed to generate Excel']);
+        }
+
+        $fileUrl = rtrim(env('NODE_API_URL'), '/') . $data['file_url'];
+
+        return redirect($fileUrl);
     }
 
 }

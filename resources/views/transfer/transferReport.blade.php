@@ -14,6 +14,11 @@
     </div>
 
     <div class="card-body">
+            <form method="GET" action="{{ route('transfer.export') }}" target="_blank">
+            <label>From: <input type="date" name="from" class="form-control" required></label>
+            <label>To: <input type="date" name="to" class="form-control" required></label>            
+            <button type="submit" class="btn btn-success">Export Excel</button>
+        </form>
         <!-- Responsive table container -->
         <div class="table-responsive">
             <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
@@ -50,3 +55,29 @@
     </div>
 </div>
 @endsection
+<script>
+document.getElementById('exportForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const from = form.from.value;
+    const to = form.to.value;
+
+    const url = '{{ route("transfer.export") }}' + '?from=' + from + '&to=' + to;
+
+    try {
+        const res = await fetch(url, { credentials: 'same-origin' });
+        const data = await res.json();
+
+        if (data.file_url) {
+            // Open the Node.js Excel file in a new tab
+            window.open(data.file_url, '_blank');
+        } else {
+            alert(data.error || 'Failed to generate Excel');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error exporting Excel');
+    }
+});
+</script>

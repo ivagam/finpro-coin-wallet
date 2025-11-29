@@ -49,7 +49,7 @@
                         <td class="status-col">
                             @if($tx['status'] == '1')
                                 <span class="bg-success-focus text-success-main px-16 py-4 radius-4 fw-medium text-sm">
-                                    Processed
+                                    Approved
                                 </span>
                             @else
                                 <span class="bg-danger-focus text-danger-main px-16 py-4 radius-4 fw-medium text-sm">
@@ -138,7 +138,7 @@
         <form id="approveForm" class="ajax-form" method="POST" action="{{ route('transfer.approve') }}">
           @csrf
           <input type="hidden" name="withdrawal_id" id="approveWithdrawalId">
-
+          
           <div class="d-flex justify-content-center gap-3 mt-4">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
@@ -163,6 +163,15 @@
 
 
 <script>
+
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.approveBtn');
+    if (!btn) return;
+
+    const withdrawalId = btn.getAttribute('data-id');
+    document.getElementById('approveWithdrawalId').value = withdrawalId;    
+});
+
 (function () {
   document.addEventListener('DOMContentLoaded', () => {
     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
@@ -240,20 +249,22 @@
         const apiStatus = (json.status || '').toLowerCase();
 
         if (apiStatus === 'ok') {
-          showMessage(msgContainer, json.message || 'Operation successful.', 'success');
+            showMessage(msgContainer, json.message || 'Operation successful.', 'success');
 
-          // optional: close modal if inside one
-          try {
-            const modalEl = form.closest('.modal');
-            if (modalEl) {
-              const bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-              bsModal.hide();
-            }
-          } catch (e) {
-            // ignore if bootstrap not available
-          }
+            try {
+                const modalEl = form.closest('.modal');
+                if (modalEl) {
+                    const bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    bsModal.hide();
+                }
+            } catch (e) {}
 
-          form.reset();
+            form.reset();
+
+            // 🔥 Auto refresh table after 1 second
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         } else {
           // show server side message or fallback to message/error fields
           const errMsg = json.message || json.error || `Server error (${res.status})`;

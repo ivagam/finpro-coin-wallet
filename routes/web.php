@@ -85,6 +85,9 @@ Route::middleware([SessionAuth::class])->group(function () {
             Route::post('/approveDeposit', 'approveDeposit')->name('deposit.approve');
             Route::post('/saveDeposit', 'saveDeposit')->name('saveDeposit');
             Route::post('/ajaxSend', 'ajaxSend')->name('ajaxSend');
+            Route::get('/approvedStatus', 'approvedStatus')->name('approvedstatus');
+            Route::get('/pendingStatus', 'pendingStatus')->name('pendingstatus');
+            Route::get('/export', 'exportExcel')->name('transfer.export');
         });
     });
 

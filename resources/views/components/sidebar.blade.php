@@ -33,13 +33,29 @@
                     </li>    
                     <li>
                     <a href="{{ route('depositReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Deposit</a>
-                    </li>     
+                    </li> 
+                    @if($admin == 0)    
                     <li>
                     <a href="{{ route('withdrawalReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Withdrawal</a>
-                    </li>           
+                    </li> 
+                    @endif          
                 </ul>
             </li>
             @if($admin == 1)
+            <li class="dropdown">
+                <a  href="javascript:void(0)">
+                    <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
+                    <span>Withdrawal</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                    <a href="{{ route('approvedstatus') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Approved</a>
+                    </li>
+                    <li>
+                    <a href="{{ route('pendingstatus') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Pending</a>
+                    </li>                    
+                </ul>
+            </li>
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
