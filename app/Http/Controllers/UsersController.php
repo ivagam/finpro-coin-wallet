@@ -35,13 +35,13 @@ class UsersController extends Controller
         $data['apiBase'] = $apiBase;        
         return view('users/viewProfile',$data);
     }
-    // Accept form submit and forward to Node API
+    
     public function updateProfile(Request $request)
     {
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
-
-        // minimal validation for required non-file fields
+        $userId = $request->input('user_id', session('id'));
+        
         try{
             $request->validate([
                 'fullname' => 'required|string|max:255',
@@ -51,19 +51,18 @@ class UsersController extends Controller
          } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                     ->withErrors($e->validator)
-                    ->withInput() // ensures old() is available
+                    ->withInput()
                     ->with('active_tab', 'pills-change-passwork');
         }
 
-        // Build multipart array
         $multipart = [
             ['name' => 'fullname', 'contents' => $request->input('fullname')],
             ['name' => 'email', 'contents' => $request->input('email')],
             ['name' => 'phone', 'contents' => $request->input('phone')],
             ['name' => 'pancard_no', 'contents' => $request->input('pancard_no')],
+            ['name' => 'user_id', 'contents' => $userId],
         ];
 
-        // files (only attach if provided)
         $fileFields = [
             'profile_image' => $request->file('profile_image'),
             'aadhar_front'  => $request->file('aadhar_front'),
@@ -80,13 +79,12 @@ class UsersController extends Controller
             }
         }
 
-        // Use Guzzle client
         $client = new Client([
             'timeout' => 60,
         ]);
 
         try {
-            $response = $client->request('POST', "{$apiBase}/api/update-profile", [
+        $response = $client->request('POST', "{$apiBase}/api/update-profile", [
                 'headers' => [
                     'Authorization' => "Bearer {$token}",
                     'Accept' => 'application/json',
@@ -109,10 +107,10 @@ class UsersController extends Controller
             }
         }
 
-        // success path
         $status = $response->getStatusCode();
         $body = (string)$response->getBody();
         $headers = $response->getHeaders();
+
         Log::info("Node update-profile response", ['status'=>$status, 'headers'=>$headers, 'body'=>substr($body,0,2000)]);
 
         if ($status >= 200 && $status < 300) {
@@ -128,7 +126,8 @@ class UsersController extends Controller
     {        
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
-
+        $userId = $request->input('user_id', session('id'));
+        
         try {
             $request->validate([
                 'current_pass' => 'required|string|max:255',
@@ -145,7 +144,8 @@ class UsersController extends Controller
         try {
             $response = Http::withToken($token)->post("{$apiBase}/api/change-password", [
                 'current_pass' => $request->current_pass,
-                'new_pass'     => $request->new_pass
+                'new_pass'     => $request->new_pass,
+                'user_id' => $userId
             ]);
 
             $data = $response->json();
@@ -167,14 +167,14 @@ class UsersController extends Controller
         }
     }
 
-        // Accept form submit and forward to Node API
     public function updateBankAccount(Request $request)
     {
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
+        $userId = $request->input('user_id', session('id'));
 
         // minimal validation for required non-file fields
-        try{
+        try{            
             $request->validate([
                 'account_holder_name' => 'required|string|max:255',
                 'account_no'    => 'required|string|max:30',
@@ -184,7 +184,7 @@ class UsersController extends Controller
          } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                     ->withErrors($e->validator)
-                    ->withInput() // ensures old() is available
+                    ->withInput()
                     ->with('active_tab', 'pills-change-passwork');
         }
 
@@ -196,9 +196,9 @@ class UsersController extends Controller
             ['name' => 'bank_name', 'contents' => $request->input('bank_name')],
             ['name' => 'branch_name', 'contents' => $request->input('branch_name')],
             ['name' => 'bank_acc_id', 'contents' => $request->input('bank_acc_id')],
+            ['name' => 'user_id', 'contents' => $userId],
         ];
-
-        // files (only attach if provided)
+        
         $fileFields = [
             'attachment' => $request->file('attachment'),
         ];
@@ -261,37 +261,39 @@ class UsersController extends Controller
         return redirect()->back()->withErrors("Node API returned HTTP {$status}: " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
     }
 
-    public function show($id)
-{
-    $token = session('token'); // your auth token
-    $apiBase = rtrim(env('NODE_API_URL'), '/');
+    public function show($id = null)
+    {
+        $token = session('token');
+        $apiBase = rtrim(env('NODE_API_URL'), '/');
 
-    try {
-        // Call the Node API to get user details
-        $response = Http::withToken($token)->get("{$apiBase}/api/user/{$id}");
+        // Use session user_id if $id is not provided
+        $userId = $id ?? session('user_id');
 
-        if ($response->failed()) {            
-            $error = $response->json()['message'] ?? 'Failed to fetch user data';
-            return redirect()->back()->with('error', $error);
+        try {
+            $response = Http::withToken($token)->get("{$apiBase}/api/user/{$userId}");
+
+            if ($response->failed()) {
+                $error = $response->json()['message'] ?? 'Failed to fetch user data';
+                return redirect()->back()->with('error', $error);
+            }
+
+            $user = $response->json()['data'] ?? null;
+
+            if (!$user) {
+                return redirect()->back()->with('error', 'User data not found');
+            }
+
+            return view('users/viewProfile', [
+                'status'  => 'ok',
+                'user'    => $user,
+                'apiBase' => $apiBase,
+                'id'      => $id, // might be null for normal users
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
-
-        $user = $response->json()['data'] ?? null;
-        
-        if (!$user) {
-            return redirect()->back()->with('error', 'User data not found');
-        }
-
-        $data = [
-            'status' => 'ok',
-            'user'   => $user,
-            'apiBase'=> $apiBase
-        ];
-
-        return view('users/viewProfile', $data);
-
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
     }
-}
+
 
 }

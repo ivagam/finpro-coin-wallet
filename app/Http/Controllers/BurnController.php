@@ -20,9 +20,7 @@ class BurnController extends Controller
         ]);
 
         $token = session('token');
-        $user  = session('user');
-
-       
+        $user  = session('user');       
 
         $apiBase = rtrim(env('NODE_API_URL'), '/');
 

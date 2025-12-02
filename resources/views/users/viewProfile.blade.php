@@ -190,10 +190,11 @@
 
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="pills-edit-profile" role="tabpanel" aria-labelledby="pills-edit-profile-tab" tabindex="0">
-                                   
-                                  
+                                                                     
                                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
+
+                                        <input type="hidden" name="user_id" value="{{ $id ?? session('user_id') }}">
                                         <div class="row">
                                              <h6 class="text-md text-primary-light mb-16">Profile Image</h6>
                                     <!-- Upload Image Start -->
@@ -310,6 +311,7 @@
                                  
                                     <form action="{{ route('profile.changePassword') }}" method="POST">
                                         @csrf
+                                        <input type="hidden" name="user_id" value="{{ $id ?? session('user_id') }}">
                                         <div class="mb-20">
                                             <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Current Password <span class="text-danger-600">*</span></label>
                                             <div class="position-relative">
@@ -345,7 +347,8 @@
 
                                 <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
                                      <form action="{{ route('profile.updateBankAccount') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf                                        
+                                        @csrf
+                                        <input type="hidden" name="user_id" value="{{ $id ?? session('user_id') }}">
                                         <div class="row">
                                             <input type="hidden" name="bank_acc_id" value="{{$user['bank_acc_id']}}"/>
                                             <div class="col-sm-6">
@@ -357,19 +360,19 @@
                                             
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
-                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Account No</label>
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Account No <span class="text-danger-600">*</span></label>
                                                     <input type="number" class="form-control radius-8" name="account_no"  value="{{$user['account_no']}}" placeholder="Enter account number">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
-                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">IFSC Code</label>
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">IFSC Code <span class="text-danger-600">*</span></label>
                                                     <input type="text" class="form-control radius-8" name="ifsc"  value="{{$user['ifsc']}}" placeholder="Enter ifsc code">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
-                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Bank Name</label>
+                                                    <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Bank Name <span class="text-danger-600">*</span></label>
                                                     <input type="text" class="form-control radius-8" name="bank_name"  value="{{$user['bank_name']}}" placeholder="Enter bank name">
                                                 </div>
                                             </div>

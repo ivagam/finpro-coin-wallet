@@ -112,7 +112,7 @@
                                     </a>
                                     
                                     <button type="button" class="status-btn bg-warning-focus bg-hover-warning-200 text-warning-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" data-user-id="{{ $tx['id'] }}">
-                                        <iconify-icon icon="mdi:swap-horizontal" class="menu-icon"></iconify-icon>
+                                        <iconify-icon icon="mdi:account-check-outline" class="icon text-xl"></iconify-icon>
                                     </button>
                                 </div>
                             </td>
@@ -131,7 +131,7 @@
 <div id="status-popup" class="popup-overlay" style="display:none;">
     <div class="popup-content">
         <p>Are you sure you want to change the status?</p>
-        <form id="status-form" method="POST" action="{{ route('users.changeStatus') }}">
+        <form id="status-form" method="POST" action="{{ route('dashboard.changeStatus') }}">
             @csrf
             <input type="hidden" name="id" id="popup-user-id">
             <button type="submit" class="btn-confirm">Yes</button>

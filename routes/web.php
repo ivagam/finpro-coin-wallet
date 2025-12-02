@@ -47,9 +47,11 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/', 'index')->name('dashboard.index');
-            Route::get('/userList', 'userList')->name('dashboard.userList');
+            Route::get('/verifiedUser', 'verifiedUser')->name('dashboard.verifiedUser');
+            Route::get('/unverifiedUser', 'unverifiedUser')->name('dashboard.unverifiedUser');
             Route::post('/withdraw', 'withdraw')->name('dashboard.withdraw');
-            Route::post('/change-status', 'changeUserStatus')->name('users.changeStatus');
+            Route::post('/change-status', 'changeUserStatus')->name('dashboard.changeStatus');
+            Route::post('/users/kyc-verify', 'kycVerify')->name('dashboard.kycVerify');
         });
     });
 

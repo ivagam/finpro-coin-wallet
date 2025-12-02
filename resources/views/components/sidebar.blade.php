@@ -63,7 +63,7 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                    <a href="{{ route('mint') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Mint value</a>
+                    <a href="{{ route('mint') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Mint Value</a>
                     </li>
                     <li>
                     <a href="{{ route('mintReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Mint Report</a>
@@ -77,7 +77,7 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                    <a href="{{ route('burn') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Burn value</a>
+                    <a href="{{ route('burn') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Burn Value</a>
                     </li>
                     <li>
                     <a href="{{ route('burnReport') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Burn Report</a>
@@ -91,9 +91,11 @@
                 </a>
                   <ul class="sidebar-submenu">
                     <li>
-                    <a href="{{ route('dashboard.userList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> User List</a>
+                    <a href="{{ route('dashboard.verifiedUser') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Verfied User</a>
                     </li>
-                                     
+                    <li>
+                    <a href="{{ route('dashboard.unverifiedUser') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> UnVerfied User</a>
+                    </li>              
                 </ul>
                 
             </li>
