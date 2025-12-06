@@ -240,7 +240,7 @@
 
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Trade Address</label>
-                                        <textarea name="address" id="t_address" class="form-control bg-base h-80-px radius-8" placeholder="Enter Address" required></textarea>
+                                        <textarea name="address" id="t_address" class="form-control bg-base h-80-px radius-8" placeholder="Enter Address or Client Id" required></textarea>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary ajax-submit">
@@ -283,7 +283,7 @@
                                     <div class="mb-20">
                                         <label class="fw-semibold mb-8 text-primary-light">Burn Address</label>
                                         <textarea name="address" id="address" class="form-control bg-base h-80-px radius-8"
-                                                placeholder="Enter Burn Address" required></textarea>
+                                                placeholder="Enter Burn Address or Client Id" required></textarea>
                                                 <div class="invalid-feedback" id="error-address"></div>
 
                                     </div>

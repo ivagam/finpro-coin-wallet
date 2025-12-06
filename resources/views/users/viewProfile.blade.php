@@ -53,6 +53,7 @@
                                             />
                                 <h6 class="mb-0 mt-16">{{$user['fullname']}}</h6>
                                 <span class="text-secondary-light mb-16">{{$user['email']}}</span>
+                                <h6 class="text-lg text-primary-light fw-semibold mb-2"> Client Id: {{ session('user.id') }}</h6>
                                 
                             </div>
                             <div class="mt-24">

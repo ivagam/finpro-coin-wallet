@@ -24,7 +24,7 @@
                         <label for="address" class="form-label fw-bold">Token Address:</label>
                         <input type="text" name="address" id="address"
                                class="form-control @error('address') is-invalid @enderror"
-                               placeholder="Enter Address"
+                               placeholder="Enter Address or Client Id"
                                value="{{ old('address') }}">
                         @error('address')
                             <span class="text-danger">{{ $message }}</span>

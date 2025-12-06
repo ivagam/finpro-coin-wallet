@@ -26,6 +26,7 @@
                         <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                             <div>
                                 <h6 class="text-lg text-primary-light fw-semibold mb-2">{{ session('user.fullname') }}</h6>
+                                <h6 class="text-lg text-primary-light fw-semibold mb-2"> Client Id: {{ session('user.id') }}</h6>
                               
                             </div>
                             <button type="button" class="hover-text-danger">
