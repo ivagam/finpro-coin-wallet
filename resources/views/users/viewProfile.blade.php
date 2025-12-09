@@ -53,7 +53,7 @@
                                             />
                                 <h6 class="mb-0 mt-16">{{$user['fullname']}}</h6>
                                 <span class="text-secondary-light mb-16">{{$user['email']}}</span>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-2"> Client Id: {{ session('user.id') }}</h6>
+                                <h6 class="text-lg text-primary-light fw-semibold mb-2"> Client Id: {{$user['id']}}</h6>
                                 
                             </div>
                             <div class="mt-24">
@@ -195,7 +195,7 @@
                                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
 
-                                        <input type="hidden" name="user_id" value="{{ $id ?? session('user_id') }}">
+                                        <input type="hidden" name="user_id" value="{{ $id ?? session('user_id') }}">                                        
                                         <div class="row">
                                              <h6 class="text-md text-primary-light mb-16">Profile Image</h6>
                                     <!-- Upload Image Start -->
@@ -223,7 +223,7 @@
                                             <div class="col-sm-6">
                                                 <div class="mb-20">
                                                     <label for="email" class="form-label fw-semibold text-primary-light text-sm mb-8">Email <span class="text-danger-600">*</span></label>
-                                                    <input type="email" name="email" class="form-control radius-8" id="email" value="{{$user['email']}}" placeholder="Enter email address">
+                                                    <input type="email" name="email" class="form-control radius-8" id="email" value="{{$user['email']}}" placeholder="Enter email address" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
@@ -343,8 +343,7 @@
                                                 </button>
                                             </div>
                                     </form>
-                                </div>                                    
-                            </div>
+                                </div>
 
                                 <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
                                      <form action="{{ route('profile.updateBankAccount') }}" method="POST" enctype="multipart/form-data">
@@ -417,12 +416,14 @@
                                         </div>
                                     </form>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
 @endsection
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -447,5 +448,14 @@ document.addEventListener("DOMContentLoaded", function() {
     previewImage("aadharFrontUpload", "aadharFrontPreview");
     previewImage("aadharBackUpload", "aadharBackPreview");
     previewImage("panCardUpload", "panCardPreview");
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.hash === "#pills-notification-tab") {
+        let tab = document.getElementById("pills-notification-tab");
+        if (tab) {
+            new bootstrap.Tab(tab).show();
+        }
+    }
 });
 </script>

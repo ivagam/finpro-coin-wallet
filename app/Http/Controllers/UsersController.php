@@ -40,24 +40,22 @@ class UsersController extends Controller
     {
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
-        $userId = $request->input('user_id', session('id'));
+        $userId = $request->input('user_id') ?: session('user.id');
         
         try{
             $request->validate([
-                'fullname' => 'required|string|max:255',
-                'email'    => 'required|email|max:255',
+                'fullname' => 'required|string|max:255',                
                 'phone'    => 'required|string|max:30',
             ]);
          } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                     ->withErrors($e->validator)
                     ->withInput()
-                    ->with('active_tab', 'pills-change-passwork');
+                    ->with('active_tab', 'pills-edit-profile-tab');
         }
 
         $multipart = [
-            ['name' => 'fullname', 'contents' => $request->input('fullname')],
-            ['name' => 'email', 'contents' => $request->input('email')],
+            ['name' => 'fullname', 'contents' => $request->input('fullname')],            
             ['name' => 'phone', 'contents' => $request->input('phone')],
             ['name' => 'pancard_no', 'contents' => $request->input('pancard_no')],
             ['name' => 'user_id', 'contents' => $userId],
@@ -107,13 +105,13 @@ class UsersController extends Controller
             }
         }
 
-        $status = $response->getStatusCode();
+        $status = $response->getStatusCode();        
         $body = (string)$response->getBody();
         $headers = $response->getHeaders();
 
         Log::info("Node update-profile response", ['status'=>$status, 'headers'=>$headers, 'body'=>substr($body,0,2000)]);
 
-        if ($status >= 200 && $status < 300) {
+        if ($status >= 200 && $status < 300) {            
             return redirect()->back()->with('success', 'Profile updated successfully.')->with('active_tab','pills-edit-profile-tab');
         }
 
@@ -126,7 +124,7 @@ class UsersController extends Controller
     {        
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
-        $userId = $request->input('user_id', session('id'));
+        $userId = $request->input('user_id') ?: session('user.id');
         
         try {
             $request->validate([
@@ -138,7 +136,7 @@ class UsersController extends Controller
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput()
-                ->with('active_tab', 'pills-change-passwork');
+                ->with('active_tab', 'pills-change-passwork-tab');
         }
 
         try {
@@ -153,17 +151,17 @@ class UsersController extends Controller
             if ($response->failed()) {
                 return redirect()->back()
                     ->with('error', $data['message'] ?? 'Password change failed')
-                    ->with('active_tab', 'pills-change-passwork');
+                    ->with('active_tab', 'pills-change-passwork-tab');
             }
 
             return redirect()->back()
                 ->with('success', 'Password updated successfully!')
-                ->with('active_tab', 'pills-change-passwork');
+                ->with('active_tab', 'pills-change-passwork-tab');
 
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Server error: ' . $e->getMessage())
-                ->with('active_tab', 'pills-change-passwork');
+                ->with('active_tab', 'pills-change-passwork-tab');
         }
     }
 
@@ -171,95 +169,82 @@ class UsersController extends Controller
     {
         $token = session('token');
         $apiBase = rtrim(env('NODE_API_URL'), '/');
-        $userId = $request->input('user_id', session('id'));
+        $userId = $request->input('user_id') ?: session('user.id');
 
-        // minimal validation for required non-file fields
-        try{            
+        try {
             $request->validate([
                 'account_holder_name' => 'required|string|max:255',
-                'account_no'    => 'required|string|max:30',
-                'ifsc'    => 'required|string|max:30',
-                'bank_name'    => 'required|string|max:30',
+                'account_no'          => 'required|string|max:30',
+                'ifsc'                => 'required|string|max:30',
+                'bank_name'           => 'required|string|max:30',
             ]);
-         } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
-                    ->withErrors($e->validator)
-                    ->withInput()
-                    ->with('active_tab', 'pills-change-passwork');
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('active_tab', 'pills-notification-tab');
         }
 
-        // Build multipart array
+        // Build multipart
         $multipart = [
             ['name' => 'account_holder_name', 'contents' => $request->input('account_holder_name')],
-            ['name' => 'account_no', 'contents' => $request->input('account_no')],
-            ['name' => 'ifsc', 'contents' => $request->input('ifsc')],
-            ['name' => 'bank_name', 'contents' => $request->input('bank_name')],
-            ['name' => 'branch_name', 'contents' => $request->input('branch_name')],
-            ['name' => 'bank_acc_id', 'contents' => $request->input('bank_acc_id')],
-            ['name' => 'user_id', 'contents' => $userId],
+            ['name' => 'account_no',          'contents' => $request->input('account_no')],
+            ['name' => 'ifsc',                'contents' => $request->input('ifsc')],
+            ['name' => 'bank_name',           'contents' => $request->input('bank_name')],
+            ['name' => 'branch_name',         'contents' => $request->input('branch_name')],
+            ['name' => 'bank_acc_id',         'contents' => $request->input('bank_acc_id')],
+            ['name' => 'user_id',             'contents' => $userId],
         ];
-        
-        $fileFields = [
-            'attachment' => $request->file('attachment'),
-        ];
-        foreach ($fileFields as $field => $file) {
-            if ($file && $file->isValid()) {
-                $multipart[] = [
-                    'name'     => $field,
-                    'contents' => fopen($file->getRealPath(), 'r'),
-                    'filename' => $file->getClientOriginalName(),
-                ];
-            }
+
+        // Files
+        if ($request->hasFile('attachment') && $request->file('attachment')->isValid()) {
+            $file = $request->file('attachment');
+            $multipart[] = [
+                'name'     => 'attachment',
+                'contents' => fopen($file->getRealPath(), 'r'),
+                'filename' => $file->getClientOriginalName()
+            ];
         }
 
-        // Use Guzzle client
-        $client = new Client([
-            'timeout' => 60,
-            //'verify' => false, // if you hit SSL issues in dev (not recommended)
-        ]);
+        $client = new Client(['timeout' => 60]);
 
         try {
             $response = $client->request('POST', "{$apiBase}/api/update-bankaccount", [
                 'headers' => [
                     'Authorization' => "Bearer {$token}",
-                    'Accept' => 'application/json',
-                    // Do NOT set Content-Type here; Guzzle will set the correct multipart boundary
+                    'Accept'        => 'application/json',
                 ],
                 'multipart' => $multipart,
             ]);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            // If server returns a response (4xx/5xx), it can be inside the exception
             $resp = $e->getResponse();
             if ($resp) {
                 $status = $resp->getStatusCode();
-                $body = (string)$resp->getBody();
-                $headers = $resp->getHeaders();
-                Log::error("Node API update-profile error (exception). Status: {$status}", ['headers'=>$headers, 'body'=>$body]);
-                return redirect()->back()->withErrors("Node API error: HTTP {$status} — " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
-            } else {
-                Log::error('Node API update-profile request failed (no response)', ['error' => $e->getMessage()]);
-                return redirect()->back()->withErrors('Node API request failed: ' . $e->getMessage())->with('active_tab','pills-edit-profile-tab');
+                $body   = (string) $resp->getBody();
+
+                Log::error("Node API update-bankaccount error", ['status' => $status, 'body' => $body]);
+
+                return redirect()->back()
+                    ->withErrors("Node API error: HTTP {$status} — " . substr($body, 0, 1000))
+                    ->with('active_tab', 'pills-notification-tab');
             }
-        }
-
-        // success path
-        $status = $response->getStatusCode();
-        $body = (string)$response->getBody();
-        $headers = $response->getHeaders();
-        Log::info("Node update-profile response", ['status'=>$status, 'headers'=>$headers, 'body'=>substr($body,0,2000)]);
-
-        if ($status >= 200 && $status < 300) {
-
-            $json = json_decode($body, true);
-            $msg = $json['message'] ?? 'Success';
 
             return redirect()->back()
-                ->with('success', $msg)
-                ->with('active_tab','pills-notification');
+                ->withErrors("Request failed: " . $e->getMessage())
+                ->with('active_tab', 'pills-notification-tab');
         }
 
-        return redirect()->back()->withErrors("Node API returned HTTP {$status}: " . substr($body,0,1000))->with('active_tab','pills-edit-profile-tab');
+        // Success
+        $body = (string) $response->getBody();
+        $json = json_decode($body, true);
+
+        $msg = $json['message'] ?? 'Success';
+
+        return redirect()->back()
+            ->with('success', $msg)
+            ->with('active_tab', 'pills-notification-tab');
     }
+
 
     public function show($id = null)
     {
