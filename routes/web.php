@@ -98,6 +98,8 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::post('/profile/changePassword', [UsersController::class, 'changePassword'])->name('profile.changePassword');
     Route::post('/profile/updateBankAccount', [UsersController::class, 'updateBankAccount'])->name('profile.updateBankAccount');
     Route::get('/profile/view/{id}', [UsersController::class, 'show'])->name('profile.view');
+    Route::get('/download/{filename}', [UsersController::class, 'downloadFile'])
+    ->name('download.file');
 
 
     // Users pages

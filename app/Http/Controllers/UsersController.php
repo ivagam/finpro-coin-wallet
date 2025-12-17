@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Response;
 
 class UsersController extends Controller
 {
@@ -278,6 +278,27 @@ class UsersController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Server error: ' . $e->getMessage());
         }
+    }
+
+    public function downloadFile($filename)
+    {
+        $filename = basename($filename);
+
+        $fileUrl = rtrim(env('NODE_API_URL'), '/') . '/uploads/' . $filename;
+
+        // Get file from Node server
+        $response = Http::get($fileUrl);
+
+        if (!$response->ok()) {
+            abort(404);
+        }
+
+        return response()->streamDownload(
+            function () use ($response) {
+                echo $response->body();
+            },
+            $filename
+        );
     }
 
 

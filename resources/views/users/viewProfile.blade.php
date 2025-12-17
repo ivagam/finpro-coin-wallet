@@ -80,39 +80,71 @@
                                    
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light">Pancart Image</span>
-                                        <span class="w-70 text-secondary-light fw-medium">
+
+                                        <span class="w-70 text-secondary-light fw-medium d-flex align-items-center gap-1">
                                             :
                                             <img
                                                 src="{{ $user['pancard_image'] ? $apiBase.'/uploads/'. $user['pancard_image'] : asset('assets/images/no-image.jpg') }}"
                                                 alt="Profile Image"
-                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                                class="zoomable-image"
+                                                data-image="{{ $user['pancard_image'] ? $apiBase.'/uploads/'. $user['pancard_image'] : asset('assets/images/no-image.jpg') }}"
+                                                style="width:60px;height:60px;object-fit:cover;cursor:pointer;"
                                             />
+
+                                            @if($user['pancard_image'])
+                                                <a
+                                                    href="{{ route('download.file', basename($user['pancard_image'])) }}"
+                                                    title="Download Image"
+                                                    class="text-primary fs-5 ms-1">
+                                                    <i class="ri-download-2-line"></i>
+                                                </a>
+                                            @endif
                                         </span>
                                     </li>
 
-                                   
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light">Aadhar Front</span>
-                                        <span class="w-70 text-secondary-light fw-medium">
+
+                                        <span class="w-70 text-secondary-light fw-medium d-flex align-items-center gap-1">
                                             :
                                             <img
                                                 src="{{ $user['aadhar_front'] ? $apiBase.'/uploads/'. $user['aadhar_front'] : asset('assets/images/no-image.jpg') }}"
                                                 alt="Profile Image"
-                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                                class="zoomable-image"
+                                                data-image="{{ $user['aadhar_front'] ? $apiBase.'/uploads/'. $user['aadhar_front'] : asset('assets/images/no-image.jpg') }}"
+                                                style="width:60px;height:60px;object-fit:cover;cursor:pointer;"
                                             />
+
+                                            @if($user['aadhar_front'])
+                                                <a
+                                                    href="{{ route('download.file', basename($user['aadhar_front'])) }}"
+                                                    title="Download Image"
+                                                    class="text-primary fs-5 ms-1">
+                                                    <i class="ri-download-2-line"></i>
+                                                </a>
+                                            @endif
                                         </span>
                                     </li>
-
                                    
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light">Aadhar Back</span>
-                                        <span class="w-70 text-secondary-light fw-medium">
+
+                                        <span class="w-70 text-secondary-light fw-medium d-flex align-items-center gap-1">
                                             :
                                             <img
                                                 src="{{ $user['aadhar_back'] ? $apiBase.'/uploads/'. $user['aadhar_back'] : asset('assets/images/no-image.jpg') }}"
-                                                alt="Profile Image"
-                                                style="width: 60px; height: 60px;  object-fit: cover;"
+                                                class="zoomable-image"
+                                                style="width:60px;height:60px;object-fit:cover;cursor:pointer;"
                                             />
+
+                                            @if($user['aadhar_back'])
+                                                <a
+                                                    href="{{ route('download.file', basename($user['aadhar_back'])) }}"
+                                                    title="Download Image"
+                                                    class="text-primary fs-5 ms-1">
+                                                    <i class="ri-download-2-line"></i>
+                                                </a>
+                                            @endif
                                         </span>
                                     </li>
 
@@ -422,6 +454,21 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content bg-transparent border-0">
+                        <div class="modal-body text-center p-0">
+                            <img
+                                id="zoomedImage"
+                                src=""
+                                class="img-fluid rounded shadow"
+                                style="max-height: 90vh;"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 @endsection
 
 
@@ -457,5 +504,18 @@ document.addEventListener("DOMContentLoaded", function () {
             new bootstrap.Tab(tab).show();
         }
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const zoomableImages = document.querySelectorAll(".zoomable-image");
+    const zoomedImage = document.getElementById("zoomedImage");
+    const imageModal = new bootstrap.Modal(document.getElementById("imageZoomModal"));
+
+    zoomableImages.forEach(img => {
+        img.addEventListener("click", function () {
+            zoomedImage.src = this.getAttribute("data-image");
+            imageModal.show();
+        });
+    });
 });
 </script>
