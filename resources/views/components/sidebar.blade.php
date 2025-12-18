@@ -91,10 +91,10 @@
                 </a>
                   <ul class="sidebar-submenu">
                     <li>
-                    <a href="{{ route('dashboard.verifiedUser') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Verfied User</a>
+                    <a href="{{ route('dashboard.verifiedUser') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Verified User</a>
                     </li>
                     <li>
-                    <a href="{{ route('dashboard.unverifiedUser') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> UnVerfied User</a>
+                    <a href="{{ route('dashboard.unverifiedUser') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Unverified User</a>
                     </li>              
                 </ul>
                 

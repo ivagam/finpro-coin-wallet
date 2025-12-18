@@ -71,6 +71,7 @@
                         <th>Token Address</th>
                         <th>Email</th>
                         <th>Phone No</th>
+                        <th>KYC Status</th>
                         <th>Status</th>
                         <th>Created Date</th>                        
                         <th>Action</th>                        
@@ -92,7 +93,8 @@
                     </td>
                         <td>{{ $tx['address'] ?? '-' }}</td>
                         <td>{{ $tx['email'] }}</td>
-                        <td>{{ $tx['phone'] }}</td>   
+                        <td>{{ $tx['phone'] }}</td>
+                        <td><span class="bg-danger-focus text-danger-main px-16 py-4 radius-4 fw-medium text-sm">Pending</span></td>
                         <td>
                               @if($tx['is_active'] == '1')
                                 <span class="bg-success-focus text-success-main px-16 py-4 radius-4 fw-medium text-sm">Active</span>
@@ -104,16 +106,18 @@
                         
                         <td class="text-center">
                                 <div class="d-flex align-items-center gap-10 justify-content-center">
-                                    <a href="{{ route('profile.view', ['id' => $tx['id']]) }}" 
+                                    <a href="{{ route('profile.view', ['id' => $tx['id']]) }}"
+                                        title="View" 
                                         class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
                                         <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
                                     </a>
                                     
-                                    <button type="button" class="status-btn bg-warning-focus bg-hover-warning-200 text-warning-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" data-user-id="{{ $tx['id'] }}">
-                                        <iconify-icon icon="mdi:account-check-outline" class="icon text-xl"></iconify-icon>
+                                    <button type="button" class="status-btn bg-warning-focus bg-hover-warning-200 text-warning-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" data-user-id="{{ $tx['id'] }}" data-status="{{ $tx['is_active'] }}">
+                                        <iconify-icon icon="mdi:account-check-outline" class="icon text-xl" style="pointer-events:none"></iconify-icon>
                                     </button>
 
                                     <button type="button" 
+                                            title="Approve KYC"
                                             class="kyc-btn bg-success-focus bg-hover-success-200 text-success-600 fw-medium 
                                             w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                                             data-user-id="{{ $tx['id'] }}">
@@ -133,7 +137,7 @@
 
 <div id="status-popup" class="popup-overlay" style="display:none;">
     <div class="popup-content">
-        <p>Are you sure you want to change the status?</p>
+        <p id="status-message"></p>
         <form id="status-form" method="POST" action="{{ route('dashboard.changeStatus') }}">
             @csrf
             <input type="hidden" name="id" id="popup-user-id">
@@ -145,7 +149,7 @@
 
 <div id="kyc-popup" class="popup-overlay" style="display:none;">
     <div class="popup-content">
-        <p>Are you sure you want to verify KYC?</p>
+        <p>Are you sure you want to approve KYC?</p>
         <form id="kyc-form" method="POST" action="{{ route('dashboard.kycVerify') }}">
             @csrf
             <input type="hidden" name="id" id="kyc-user-id">
@@ -190,6 +194,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     kycCancel.addEventListener('click', function() {
         kycPopup.style.display = 'none';
+    });
+
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const popup = document.getElementById('status-popup');
+    const popupUserId = document.getElementById('popup-user-id');
+    const statusMessage = document.getElementById('status-message');
+    const statusButtons = document.querySelectorAll('.status-btn');
+    const btnCancel = popup.querySelector('.btn-cancel');
+
+    statusButtons.forEach(btn => {
+
+        const status = btn.getAttribute('data-status');
+
+        // ✅ Dynamic title
+        btn.setAttribute(
+            'title',
+            status === '1' ? 'Deactivate User' : 'Activate User'
+        );
+
+        // ✅ Popup message
+        btn.addEventListener('click', function () {
+            popupUserId.value = this.getAttribute('data-user-id');
+
+            statusMessage.textContent =
+                status === '1'
+                ? 'Are you sure you want to deactivate this user?'
+                : 'Are you sure you want to activate this user?';
+
+            popup.style.display = 'flex';
+        });
+    });
+
+    btnCancel.addEventListener('click', function () {
+        popup.style.display = 'none';
     });
 
 });

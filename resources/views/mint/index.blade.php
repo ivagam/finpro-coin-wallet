@@ -25,7 +25,7 @@
                         <input type="text" name="address" id="address"
                                class="form-control @error('address') is-invalid @enderror"
                                placeholder="Enter Token Address"
-                               value="{{ old('address') }}">
+                               value="{{ old('address') }}" required>
                         @error('address')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -38,7 +38,7 @@
                                class="form-control @error('amount') is-invalid @enderror"
                                placeholder="Enter Token Value"
                                step="any"
-                               value="{{ old('amount') }}">
+                               value="{{ old('amount') }}" required>
                         @error('amount')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

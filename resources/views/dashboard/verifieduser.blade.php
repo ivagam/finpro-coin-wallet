@@ -73,6 +73,7 @@
                         <th>Token Address</th>
                         <th>Email</th>
                         <th>Phone No</th>
+                        <th>KYC Status</th>
                         <th>Status</th>
                         <th>Created Date</th>                        
                         <th>Action</th>                        
@@ -94,7 +95,8 @@
                     </td>
                         <td>{{ $tx['address'] ?? '-' }}</td>
                         <td>{{ $tx['email'] }}</td>
-                        <td>{{ $tx['phone'] }}</td>   
+                        <td>{{ $tx['phone'] }}</td> 
+                        <td><span class="bg-success-focus text-success-main px-16 py-4 radius-4 fw-medium text-sm">Approved</span></td>
                         <td>
                               @if($tx['is_active'] == '1')
                                 <span class="bg-success-focus text-success-main px-16 py-4 radius-4 fw-medium text-sm">Active</span>
@@ -105,17 +107,27 @@
                         <td>{{ isset($tx['created_at']) ? \Carbon\Carbon::parse($tx['created_at'])->format('d/m/Y') : '-' }}</td>
                         
                         <td class="text-center">
-                                <div class="d-flex align-items-center gap-10 justify-content-center">
-                                    <a href="{{ route('profile.view', ['id' => $tx['id']]) }}" 
-                                        class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                        <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                    </a>
-                                    
-                                    <button type="button" class="status-btn bg-warning-focus bg-hover-warning-200 text-warning-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" data-user-id="{{ $tx['id'] }}">
-                                        <iconify-icon icon="mdi:account-check-outline" class="icon text-xl"></iconify-icon>
-                                    </button>
-                                </div>
-                            </td>
+                            <div class="d-flex align-items-center gap-10 justify-content-center">
+
+                                <!-- View -->
+                                <a href="{{ route('profile.view', ['id' => $tx['id']]) }}"
+                                title="View"
+                                class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
+                                </a>
+
+                                <!-- Change Status -->
+                                <button type="button"
+                                        class="status-btn bg-warning-focus bg-hover-warning-200 text-warning-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                                        data-user-id="{{ $tx['id'] }}"
+                                        data-status="{{ $tx['is_active'] }}">
+                                    <iconify-icon icon="mdi:account-check-outline"
+                                        class="icon text-xl"
+                                        style="pointer-events:none"></iconify-icon>
+                                </button>
+
+                            </div>
+                        </td>
                     </tr>
                     @empty                    
                     @endforelse
@@ -130,7 +142,7 @@
 
 <div id="status-popup" class="popup-overlay" style="display:none;">
     <div class="popup-content">
-        <p>Are you sure you want to change the status?</p>
+        <p id="status-message"></p>
         <form id="status-form" method="POST" action="{{ route('dashboard.changeStatus') }}">
             @csrf
             <input type="hidden" name="id" id="popup-user-id">
@@ -157,5 +169,44 @@ document.addEventListener('DOMContentLoaded', function() {
     btnCancel.addEventListener('click', function() {
         popup.style.display = 'none';
     });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const popup = document.getElementById('status-popup');
+    const popupUserId = document.getElementById('popup-user-id');
+    const statusMessage = document.getElementById('status-message');
+    const statusButtons = document.querySelectorAll('.status-btn');
+    const btnCancel = popup.querySelector('.btn-cancel');
+
+    statusButtons.forEach(btn => {
+
+        // ✅ Set dynamic title
+        const status = btn.getAttribute('data-status');
+        btn.setAttribute(
+            'title',
+            status === '1' ? 'Deactivate User' : 'Activate User'
+        );
+
+        // ✅ Handle popup click
+        btn.addEventListener('click', function () {
+            popupUserId.value = this.getAttribute('data-user-id');
+
+            if (status === '1') {
+                statusMessage.textContent =
+                    'Are you sure you want to deactivate this user?';
+            } else {
+                statusMessage.textContent =
+                    'Are you sure you want to activate this user?';
+            }
+
+            popup.style.display = 'flex';
+        });
+    });
+
+    btnCancel.addEventListener('click', function () {
+        popup.style.display = 'none';
+    });
+
 });
 </script>
